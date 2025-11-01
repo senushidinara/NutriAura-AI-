@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import type { AnalysisResult, Goal } from '../types';
-import { LeafIcon, MoonIcon, HeartIcon, DropletIcon, RestartIcon, TargetIcon, ShareIcon, AuraPointsIcon, PizzaIcon, LinkIcon } from './icons';
+import { LeafIcon, MoonIcon, HeartIcon, DropletIcon, RestartIcon, TargetIcon, ShareIcon, AuraPointsIcon, PizzaIcon, LinkIcon, BookOpenIcon } from './icons';
 
 interface ResultsScreenProps {
   result: AnalysisResult;
@@ -213,6 +213,11 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
   const [showApNotification, setShowApNotification] = useState(true);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [selectedGoalToShare, setSelectedGoalToShare] = useState<Goal | null>(null);
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+
+  const toggleExpand = (id: string) => {
+    setExpandedItems(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   React.useEffect(() => {
     const timer = setTimeout(() => setShowApNotification(false), 4000);
@@ -233,6 +238,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
         title: "Cosmic Pizza Alignment",
         description: "Your facial scan indicates a severe deficiency in cheese and pepperoni. This is a critical wellness indicator.",
         icon: 'pizza',
+        deepDive: "According to ancient texts (and our AI's wild imagination), pizza aligns your chakras with the cosmic oven, leading to enlightenment. Or at least, a food coma."
     });
     
     chaoticResult.recommendations.unshift({
@@ -242,7 +248,8 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
             "Eat pizza for breakfast.",
             "Wear mismatched socks with confidence.",
             "Replace one workout with a spontaneous dance party."
-        ]
+        ],
+        deepDive: "Chaos Theory suggests that small, unpredictable actions can lead to large, unforeseen positive outcomes. Like finding an extra slice of pizza you forgot about."
     });
 
     return chaoticResult;
@@ -286,12 +293,29 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
           <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">Key Findings</h3>
           <div className="space-y-3">
             {modifiedResult.keyFindings.map((finding, index) => (
-              <div key={index} className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg flex items-start gap-4">
-                <div className="flex-shrink-0 bg-white dark:bg-slate-800 p-3 rounded-full shadow-sm">{findingIconMap[finding.icon]}</div>
-                <div>
-                  <h4 className="font-semibold text-slate-800 dark:text-slate-100">{finding.title}</h4>
-                  <p className="text-slate-600 dark:text-slate-400 text-base">{finding.description}</p>
+              <div key={index} className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 bg-white dark:bg-slate-800 p-3 rounded-full shadow-sm">{findingIconMap[finding.icon]}</div>
+                  <div className="flex-grow">
+                    <h4 className="font-semibold text-slate-800 dark:text-slate-100">{finding.title}</h4>
+                    <p className="text-slate-600 dark:text-slate-400 text-base">{finding.description}</p>
+                  </div>
                 </div>
+                {finding.deepDive && (
+                    <div className="mt-3">
+                        <button onClick={() => toggleExpand(`finding-${index}`)} className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 hover:underline">
+                            <BookOpenIcon className="w-4 h-4" />
+                            <span>{expandedItems[`finding-${index}`] ? 'Hide Details' : 'Deep Dive'}</span>
+                        </button>
+                        <div className={`grid transition-all duration-300 ease-in-out ${expandedItems[`finding-${index}`] ? 'grid-rows-[1fr] opacity-100 mt-2' : 'grid-rows-[0fr] opacity-0'}`}>
+                            <div className="overflow-hidden">
+                                <p className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-md text-sm text-slate-600 dark:text-slate-300">
+                                    {finding.deepDive}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
               </div>
             ))}
           </div>
@@ -314,6 +338,21 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
                             </li>
                         ))}
                     </ul>
+                    {rec.deepDive && (
+                        <div className="mt-4">
+                            <button onClick={() => toggleExpand(`rec-${index}`)} className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 hover:underline">
+                                <BookOpenIcon className="w-4 h-4" />
+                                <span>{expandedItems[`rec-${index}`] ? 'Hide Details' : 'Deep Dive'}</span>
+                            </button>
+                            <div className={`grid transition-all duration-300 ease-in-out ${expandedItems[`rec-${index}`] ? 'grid-rows-[1fr] opacity-100 mt-2' : 'grid-rows-[0fr] opacity-0'}`}>
+                                <div className="overflow-hidden">
+                                    <p className="p-3 bg-white dark:bg-slate-700/50 rounded-md text-sm text-slate-600 dark:text-slate-300">
+                                        {rec.deepDive}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             ))}
          </div>

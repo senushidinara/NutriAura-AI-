@@ -22,14 +22,16 @@ const analysisSchemaDescription = `
     {
       "title": "string",
       "description": "string",
-      "icon": "nutrition" | "sleep" | "stress" | "hydration"
+      "icon": "nutrition" | "sleep" | "stress" | "hydration",
+      "deepDive": "A 2-3 sentence detailed explanation, context, or scientific backing for this insight. Use grounded knowledge for accuracy."
     }
   ],
   "recommendations": [
     {
       "title": "string",
       "description": "string",
-      "items": ["string"]
+      "items": ["string"],
+      "deepDive": "A 2-3 sentence detailed explanation of why this recommendation is effective, citing general scientific principles. Use grounded knowledge for accuracy."
     }
   ]
 }
@@ -70,6 +72,8 @@ export const getWellnessAnalysis = async (
     Provide key findings and actionable recommendations. Your tone should be calming, supportive, and scientifically confident.
     
     For recommendations, leverage Google Search and Google Maps to provide up-to-date, relevant, and localized suggestions. For example, recommend specific healthy restaurants or grocery stores near the user, or suggest nearby parks or wellness centers for stress relief.
+    
+    For EACH key finding and recommendation, you MUST provide a "deepDive" field containing a 2-3 sentence detailed explanation, context, or scientific backing for the insight. Use your grounded knowledge from Google Search to ensure this information is accurate and helpful.
 
     Your entire response MUST be a single JSON object enclosed in a markdown code block (\`\`\`json ... \`\`\`). The JSON object must conform to this schema:
     ${analysisSchemaDescription}

@@ -43,11 +43,13 @@ export interface AnalysisResult {
     title: string;
     description: string;
     icon: 'nutrition' | 'sleep' | 'stress' | 'hydration' | 'pizza';
+    deepDive?: string;
   }[];
   recommendations: {
     title: string;
     description: string;
     items: string[];
+    deepDive?: string;
   }[];
   groundingAttribution?: GroundingChunk[];
 }
