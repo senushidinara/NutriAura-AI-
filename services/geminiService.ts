@@ -1,5 +1,4 @@
-
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import type { QuizAnswers, AnalysisResult } from '../types';
 
 const API_KEY = process.env.API_KEY;
@@ -10,55 +9,31 @@ if (!API_KEY) {
 
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 
-const analysisSchema = {
-  type: Type.OBJECT,
-  properties: {
-    scores: {
-      type: Type.OBJECT,
-      properties: {
-        nutrition: { type: Type.NUMBER, description: "Score from 0-100 for nutrition" },
-        sleep: { type: Type.NUMBER, description: "Score from 0-100 for sleep quality" },
-        stress: { type: Type.NUMBER, description: "Score from 0-100 for stress management (lower is better)" },
-        hydration: { type: Type.NUMBER, description: "Score from 0-100 for hydration level" },
-      },
-      required: ["nutrition", "sleep", "stress", "hydration"]
-    },
-    keyFindings: {
-      type: Type.ARRAY,
-      items: {
-        type: Type.OBJECT,
-        properties: {
-          title: { type: Type.STRING, description: "A short, catchy title for the finding." },
-          description: { type: Type.STRING, description: "A brief, one-sentence explanation of the finding." },
-          icon: { 
-            type: Type.STRING, 
-            description: "The relevant icon name: 'nutrition', 'sleep', 'stress', or 'hydration'",
-            enum: ['nutrition', 'sleep', 'stress', 'hydration']
-          },
-        },
-        required: ["title", "description", "icon"]
-      }
-    },
-    recommendations: {
-        type: Type.ARRAY,
-        items: {
-            type: Type.OBJECT,
-            properties: {
-                title: { type: Type.STRING, description: "Category of recommendation (e.g., 'Nutrient-Rich Foods', 'Evening Wind-Down Routine')." },
-                description: { type: Type.STRING, description: "Brief explanation of why this recommendation is important." },
-                items: {
-                    type: Type.ARRAY,
-                    description: "List of 3-5 specific, actionable recommendation points.",
-                    items: { type: Type.STRING }
-                }
-            },
-            required: ["title", "description", "items"]
-        }
-    }
+// Schema description for the prompt, to guide the model's JSON output
+const analysisSchemaDescription = `
+{
+  "scores": {
+    "nutrition": number,
+    "sleep": number,
+    "stress": number,
+    "hydration": number
   },
-  required: ["scores", "keyFindings", "recommendations"]
-};
-
+  "keyFindings": [
+    {
+      "title": "string",
+      "description": "string",
+      "icon": "nutrition" | "sleep" | "stress" | "hydration"
+    }
+  ],
+  "recommendations": [
+    {
+      "title": "string",
+      "description": "string",
+      "items": ["string"]
+    }
+  ]
+}
+`;
 
 function imageToBase64(imageDataUrl: string): { mimeType: string; data: string } {
     const parts = imageDataUrl.split(',');
@@ -69,7 +44,8 @@ function imageToBase64(imageDataUrl: string): { mimeType: string; data: string }
 
 export const getWellnessAnalysis = async (
   imageDataUrl: string,
-  answers: QuizAnswers
+  answers: QuizAnswers,
+  location: { latitude: number; longitude: number } | null
 ): Promise<AnalysisResult> => {
   const { mimeType, data: imageBase64 } = imageToBase64(imageDataUrl);
 
@@ -87,16 +63,19 @@ export const getWellnessAnalysis = async (
     - Typical diet quality: ${answers.dietQuality}
     - Daily hydration: ${answers.hydration}
     - Weekly activity level: ${answers.activityLevel}
+    
+    ${location ? `The user's current approximate location is latitude ${location.latitude}, longitude ${location.longitude}.` : ''}
 
-    Based on all this information, generate a comprehensive wellness analysis.
-    The scores should be your best estimation based on the combined data. For the stress score, a higher user-reported stress level should result in a lower wellness score (e.g. stress level 5 -> score around 20-30).
+    Based on all this information, generate a comprehensive wellness analysis. The scores should be your best estimation based on the combined data. For the stress score, a higher user-reported stress level should result in a lower wellness score (e.g. stress level 5 -> score around 20-30).
     Provide key findings and actionable recommendations. Your tone should be calming, supportive, and scientifically confident.
     
-    Generate the response strictly in the provided JSON schema.
+    For recommendations, leverage Google Search and Google Maps to provide up-to-date, relevant, and localized suggestions. For example, recommend specific healthy restaurants or grocery stores near the user, or suggest nearby parks or wellness centers for stress relief.
+
+    Your entire response MUST be a single JSON object enclosed in a markdown code block (\`\`\`json ... \`\`\`). The JSON object must conform to this schema:
+    ${analysisSchemaDescription}
   `;
 
-  try {
-    const response = await ai.models.generateContent({
+  const modelConfig: any = {
       model: 'gemini-2.5-flash',
       contents: {
         parts: [
@@ -105,15 +84,42 @@ export const getWellnessAnalysis = async (
         ],
       },
       config: {
-        responseMimeType: "application/json",
-        responseSchema: analysisSchema,
+        tools: [{googleSearch: {}}, {googleMaps: {}}],
       },
-    });
+  };
 
-    const jsonText = response.text.trim();
-    return JSON.parse(jsonText) as AnalysisResult;
+  if (location) {
+    modelConfig.config.toolConfig = {
+        retrievalConfig: {
+            latLng: {
+                latitude: location.latitude,
+                longitude: location.longitude,
+            }
+        }
+    };
+  }
+
+  try {
+    const response = await ai.models.generateContent(modelConfig);
+
+    const rawText = response.text.trim();
+    // Regex to extract JSON from ```json ... ``` block
+    const jsonMatch = rawText.match(/```json\n([\s\S]*?)\n```/);
+    
+    if (!jsonMatch || !jsonMatch[1]) {
+      console.error("Could not find valid JSON in AI response:", rawText);
+      throw new Error("The AI returned an unexpected response format. Please try again.");
+    }
+
+    const analysis = JSON.parse(jsonMatch[1]) as AnalysisResult;
+    
+    // Attach grounding metadata to the result for attribution
+    analysis.groundingAttribution = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
+    
+    return analysis;
+
   } catch (error) {
     console.error("Error calling Gemini API:", error);
-    throw new Error("Failed to get analysis from AI. Please try again.");
+    throw new Error("Failed to get analysis from the AI. The service may be temporarily unavailable.");
   }
 };

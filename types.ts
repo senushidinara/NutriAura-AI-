@@ -31,6 +31,11 @@ export interface AnalysisScores {
   hydration: number;
 }
 
+export interface GroundingChunk {
+  web?: { uri: string; title: string };
+  maps?: { uri: string; title: string };
+}
+
 export interface AnalysisResult {
   scores: AnalysisScores;
   keyFindings: {
@@ -43,6 +48,7 @@ export interface AnalysisResult {
     description: string;
     items: string[];
   }[];
+  groundingAttribution?: GroundingChunk[];
 }
 
 export interface ForumPost {

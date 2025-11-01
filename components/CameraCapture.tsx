@@ -14,9 +14,17 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
 
-  const startCamera = async () => {
+  const stopCameraStream = useCallback(() => {
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
+      setStream(null);
+      setIsCameraReady(false);
+    }
+  }, [stream]);
+
+  const startCamera = async () => {
+    if (stream) {
+      stopCameraStream();
     }
     setUploadedImage(null);
     setIsCameraReady(false);
@@ -29,7 +37,8 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
       }
-    } catch (err) {
+    } catch (err)
+ {
       console.error("Error accessing camera:", err);
       let message = "Could not access camera. Please check permissions in your browser settings.";
       if (err instanceof Error && err.name === 'NotAllowedError') {
@@ -69,15 +78,24 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
       reader.onload = (e) => {
         const dataUrl = e.target?.result as string;
         setUploadedImage(dataUrl);
-        onCapture(dataUrl);
+        stopCameraStream(); // Stop camera if it's running
       };
       reader.readAsDataURL(file);
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        setStream(null);
-      }
     }
   };
+
+  const handleAnalyzeUpload = () => {
+    if (uploadedImage) {
+      onCapture(uploadedImage);
+    }
+  };
+  
+  useEffect(() => {
+    // Cleanup stream on component unmount
+    return () => {
+      stopCameraStream();
+    };
+  }, [stopCameraStream]);
 
   const hasCamera = !!stream || isCameraReady;
 
@@ -116,20 +134,30 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
         <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
         
         <div className="mt-6 w-full max-w-xs flex flex-col gap-3">
-          <button
-              onClick={handleCapture}
-              disabled={!isCameraReady || !!uploadedImage}
-              className="w-full bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-emerald-500/40 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-700 disabled:from-slate-400 disabled:to-slate-500 dark:disabled:from-slate-600 dark:disabled:to-slate-700 disabled:cursor-not-allowed disabled:scale-100 disabled:shadow-none flex items-center justify-center gap-2"
-          >
-              <CameraIcon className="w-6 h-6" />
-              <span>Take Photo & Continue</span>
-          </button>
+          {uploadedImage ? (
+             <button
+              onClick={handleAnalyzeUpload}
+              className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-purple-500/40 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-300 dark:focus:ring-indigo-700 flex items-center justify-center gap-2"
+            >
+              <span>Analyze Uploaded Photo</span>
+            </button>
+          ) : (
+            <button
+                onClick={handleCapture}
+                disabled={!isCameraReady}
+                className="w-full bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-emerald-500/40 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-700 disabled:from-slate-400 disabled:to-slate-500 dark:disabled:from-slate-600 dark:disabled:to-slate-700 disabled:cursor-not-allowed disabled:scale-100 disabled:shadow-none flex items-center justify-center gap-2"
+            >
+                <CameraIcon className="w-6 h-6" />
+                <span>Take Photo & Continue</span>
+            </button>
+          )}
+
           <button
               onClick={handleUploadClick}
               className="w-full bg-slate-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-slate-700 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:focus:ring-slate-500 flex items-center justify-center gap-2"
           >
               <UploadIcon className="w-6 h-6" />
-              <span>Or Upload a Photo</span>
+              <span>{uploadedImage ? 'Choose a Different Photo' : 'Or Upload a Photo'}</span>
           </button>
         </div>
         {error && <p className="text-sm text-red-500 dark:text-red-400 mt-4 text-center">{error}</p>}

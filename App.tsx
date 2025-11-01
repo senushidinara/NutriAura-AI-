@@ -125,13 +125,39 @@ const App: React.FC = () => {
     setGoals(updatedGoals);
     saveGoals(updatedGoals);
   }, []);
+
+  const requestLocation = (): Promise<{ latitude: number, longitude: number } | null> => {
+    return new Promise((resolve) => {
+        if (!navigator.geolocation) {
+            console.warn("Geolocation is not supported by this browser.");
+            resolve(null);
+            return;
+        }
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                resolve({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                });
+            },
+            (error) => {
+                console.warn("Could not get user location:", error.message);
+                resolve(null); // Resolve with null on error to not block the process
+            }
+        );
+    });
+  };
   
   const analyzeWellness = useCallback(async () => {
     if (!userImage || !quizAnswers) return;
 
     try {
       setError(null);
-      const result = await getWellnessAnalysis(userImage, quizAnswers);
+      
+      // Request location before analysis for grounded results
+      const location = await requestLocation();
+      
+      const result = await getWellnessAnalysis(userImage, quizAnswers, location);
       setAnalysisResult(result);
       
       const newDataPoint: WellnessDataPoint = {

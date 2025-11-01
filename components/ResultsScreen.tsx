@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import type { AnalysisResult, Goal } from '../types';
-import { LeafIcon, MoonIcon, HeartIcon, DropletIcon, RestartIcon, TargetIcon, ShareIcon, AuraPointsIcon, PizzaIcon } from './icons';
+import { LeafIcon, MoonIcon, HeartIcon, DropletIcon, RestartIcon, TargetIcon, ShareIcon, AuraPointsIcon, PizzaIcon, LinkIcon } from './icons';
 
 interface ResultsScreenProps {
   result: AnalysisResult;
@@ -88,6 +88,39 @@ const ScoreRing: React.FC<{ score: number; label: string, color: typeof ringColo
     );
 };
 
+const GroundingAttribution: React.FC<{ attribution: AnalysisResult['groundingAttribution'] }> = ({ attribution }) => {
+    if (!attribution || attribution.length === 0) return null;
+
+    const sources = attribution.map(chunk => chunk.web || chunk.maps).filter((source): source is { uri: string; title: string; } => !!source);
+    if (sources.length === 0) return null;
+
+    return (
+        <div className="mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">
+            <h3 className="text-lg font-bold text-slate-700 dark:text-slate-200 mb-2 flex items-center gap-2">
+                <LinkIcon className="w-5 h-5 text-slate-500" />
+                Sources
+            </h3>
+            <div className="bg-slate-100 dark:bg-slate-800/50 p-4 rounded-lg text-sm space-y-2">
+                {sources.map((source, index) => (
+                    <a 
+                        key={index}
+                        href={source.uri}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block text-emerald-600 dark:text-emerald-400 hover:underline truncate"
+                        title={source.uri}
+                    >
+                        {source.title || source.uri}
+                    </a>
+                ))}
+            </div>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 text-center">
+                Recommendations are powered by Google Search and Maps for up-to-date information.
+            </p>
+        </div>
+    );
+};
+
 const GoalSetter: React.FC<{ result: AnalysisResult; goals: Goal[]; onGoalsUpdate: (goals: Goal[]) => void; onShare: (goal: Goal) => void; }> = ({ result, goals, onGoalsUpdate, onShare }) => {
     const [customGoal, setCustomGoal] = useState('');
 
@@ -136,7 +169,7 @@ const GoalSetter: React.FC<{ result: AnalysisResult; goals: Goal[]; onGoalsUpdat
     };
 
     return (
-        <div className="mb-8">
+        <div>
             <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center gap-2">
                 <TargetIcon className="w-6 h-6 text-amber-500" />
                 Set Your Goals
@@ -281,6 +314,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
       {/* Goal Setter */}
       <div className="interactive-card rounded-xl shadow-lg p-6 sm:p-8">
         <GoalSetter result={modifiedResult} goals={goals} onGoalsUpdate={onGoalsUpdate} onShare={handleShareGoal} />
+        <GroundingAttribution attribution={result.groundingAttribution} />
       </div>
 
       <button
