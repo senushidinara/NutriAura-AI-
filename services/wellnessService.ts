@@ -1,4 +1,4 @@
-import type { WellnessDataPoint, Goal, UserProfile, Mission, Badge } from '../types';
+import type { WellnessDataPoint, Goal, UserProfile, Mission, Badge, Challenge } from '../types';
 import { LeafIcon, MoonIcon, DropletIcon, HeartIcon, TrophyIcon, BadgeIcon } from '../components/icons';
 
 const HISTORY_KEY = 'nutriaura_wellness_history';
@@ -52,7 +52,15 @@ export const saveGoals = (goals: Goal[]): void => {
     }
 };
 
-// --- Challenges (Legacy, can be removed if not used elsewhere) ---
+// --- Community Challenges ---
+
+const allChallenges: Challenge[] = [
+    { id: 'hydration_challenge_month', title: 'Hydration Challenge', description: 'Drink 2L of water every day for a week.', icon: DropletIcon },
+    { id: 'mindful_eating_week', title: 'Mindful Eating Week', description: 'Eat without distractions for at least one meal a day.', icon: LeafIcon },
+    { id: 'digital_detox_weekend', title: 'Digital Detox Weekend', description: 'Spend a weekend with minimal screen time.', icon: MoonIcon },
+];
+
+export const getChallenges = (): Challenge[] => allChallenges;
 
 export const getJoinedChallenges = (): string[] => {
     try {
