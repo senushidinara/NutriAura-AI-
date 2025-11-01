@@ -1,0 +1,7 @@
+{
+  "name": "NutriAura AI — Your Body’s Intelligent Wellness Mirror",
+  "description": "An AI-powered wellness platform that analyzes your face and lifestyle habits to provide personalized nutrition, sleep, and mood recommendations.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

@@ -1,0 +1,123 @@
+import React, { useState, useCallback } from 'react';
+import type { QuizAnswers } from '../types';
+
+interface LifestyleQuizProps {
+  onSubmit: (answers: QuizAnswers) => void;
+}
+
+const LifestyleQuiz: React.FC<LifestyleQuizProps> = ({ onSubmit }) => {
+  const [answers, setAnswers] = useState<QuizAnswers>({
+    sleepHours: 7,
+    stressLevel: 3,
+    energyLevel: 3,
+    dietQuality: 'Average',
+    hydration: 'Some water',
+    activityLevel: 'Moderate'
+  });
+
+  const handleChange = useCallback((field: keyof QuizAnswers, value: any) => {
+    setAnswers(prev => ({ ...prev, [field]: value }));
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(answers);
+  };
+  
+  const sliderThumbClass = "appearance-none w-5 h-5 bg-white dark:bg-slate-300 rounded-full shadow-md border-2 border-emerald-500 cursor-pointer";
+  const sliderTrackClass = "w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full";
+
+  return (
+    <div className="p-4 w-full animate-fade-in">
+      <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2 text-center">Lifestyle Intake</h2>
+      <p className="text-slate-600 dark:text-slate-400 mb-6 text-center">Tell us about your recent habits. Be honest!</p>
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Sleep */}
+        <div>
+          <label htmlFor="sleep" className="block text-md font-medium text-slate-700 dark:text-slate-300">On average, how many hours do you sleep?</label>
+          <div className="flex items-center gap-4 mt-2">
+            <input
+              type="range"
+              id="sleep"
+              min="4"
+              max="10"
+              step="0.5"
+              value={answers.sleepHours}
+              onChange={(e) => handleChange('sleepHours', parseFloat(e.target.value))}
+              className={`w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:${sliderThumbClass} [&::-moz-range-thumb]:${sliderThumbClass}`}
+            />
+            <span className="font-bold text-emerald-600 dark:text-emerald-400 w-16 text-center">{answers.sleepHours.toFixed(1)} hrs</span>
+          </div>
+        </div>
+
+        {/* Stress */}
+        <div>
+          <label htmlFor="stress" className="block text-md font-medium text-slate-700 dark:text-slate-300">Recent stress level? (1=Low, 5=High)</label>
+          <div className="flex items-center gap-4 mt-2">
+            <input
+              type="range"
+              id="stress"
+              min="1"
+              max="5"
+              value={answers.stressLevel}
+              onChange={(e) => handleChange('stressLevel', parseInt(e.target.value, 10))}
+               className={`w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:${sliderThumbClass} [&::-moz-range-thumb]:${sliderThumbClass}`}
+            />
+            <span className="font-bold text-emerald-600 dark:text-emerald-400 w-16 text-center">{answers.stressLevel}</span>
+          </div>
+        </div>
+        
+        {/* Energy */}
+        <div>
+          <label htmlFor="energy" className="block text-md font-medium text-slate-700 dark:text-slate-300">Recent energy level? (1=Low, 5=High)</label>
+          <div className="flex items-center gap-4 mt-2">
+            <input
+              type="range"
+              id="energy"
+              min="1"
+              max="5"
+              value={answers.energyLevel}
+              onChange={(e) => handleChange('energyLevel', parseInt(e.target.value, 10))}
+               className={`w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:${sliderThumbClass} [&::-moz-range-thumb]:${sliderThumbClass}`}
+            />
+            <span className="font-bold text-emerald-600 dark:text-emerald-400 w-16 text-center">{answers.energyLevel}</span>
+          </div>
+        </div>
+
+        {/* Diet Quality */}
+        <div>
+           <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-2">How would you describe your diet?</label>
+           <div className="grid grid-cols-2 gap-2">
+             {['Very Healthy', 'Mostly Healthy', 'Average', 'Unhealthy'].map(option => (
+                <button type="button" key={option} onClick={() => handleChange('dietQuality', option)} className={`p-2 rounded-lg text-sm transition ${answers.dietQuality === option ? 'bg-emerald-500 text-white shadow' : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600'}`}>
+                    {option}
+                </button>
+             ))}
+           </div>
+        </div>
+        
+        {/* Activity Level */}
+         <div>
+           <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-2">How active are you weekly?</label>
+           <div className="grid grid-cols-2 gap-2">
+             {['Sedentary', 'Light', 'Moderate', 'Very Active'].map(option => (
+                <button type="button" key={option} onClick={() => handleChange('activityLevel', option)} className={`p-2 rounded-lg text-sm transition ${answers.activityLevel === option ? 'bg-emerald-500 text-white shadow' : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600'}`}>
+                    {option}
+                </button>
+             ))}
+           </div>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-amber-400 text-amber-900 font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-amber-500 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-amber-300 dark:focus:ring-amber-600"
+        >
+          Submit & Analyze
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export default LifestyleQuiz;
