@@ -10,8 +10,6 @@ interface ResultsScreenProps {
   isChaosMode: boolean;
 }
 
-// FIX: Changed type from 'JSX.Element' to 'React.ReactElement' to resolve 'Cannot find namespace JSX' error.
-// FIX: Updated type to specify that elements accept a `className` prop, fixing `cloneElement` type error.
 const iconMap: { [key: string]: React.ReactElement<{ className?: string }> } = {
   nutrition: <LeafIcon className="w-6 h-6 text-emerald-500" />,
   sleep: <MoonIcon className="w-6 h-6 text-indigo-500" />,
@@ -22,10 +20,10 @@ const iconMap: { [key: string]: React.ReactElement<{ className?: string }> } = {
 };
 
 const ringColorMap = {
-  nutrition: 'stroke-emerald-500 dark:stroke-emerald-400',
-  sleep: 'stroke-indigo-500 dark:stroke-indigo-400',
-  stress: 'stroke-rose-500 dark:stroke-rose-400',
-  hydration: 'stroke-sky-500 dark:stroke-sky-400',
+  nutrition: { stop1: '#34d399', stop2: '#10b981', text: 'text-emerald-500' }, // emerald
+  sleep: { stop1: '#818cf8', stop2: '#6366f1', text: 'text-indigo-500' }, // indigo
+  stress: { stop1: '#f472b6', stop2: '#ec4899', text: 'text-rose-500' }, // rose
+  hydration: { stop1: '#38bdf8', stop2: '#0ea5e9', text: 'text-sky-500' }, // sky
 }
 
 const ShareGoalModal: React.FC<{ goal: Goal | null; onClose: () => void; }> = ({ goal, onClose }) => {
@@ -33,8 +31,8 @@ const ShareGoalModal: React.FC<{ goal: Goal | null; onClose: () => void; }> = ({
 
     return (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={onClose}>
-            <div className="bg-[#fdf6e4] dark:bg-[#3a342a] border-4 border-[#5c4b31] dark:border-[#e5d8b4] rounded-lg p-6 max-w-sm w-full text-center text-[#5c4b31] dark:text-[#fdf6e4] font-serif relative animate-fade-in" onClick={(e) => e.stopPropagation()}>
-                <button onClick={onClose} className="absolute top-2 right-2 text-[#5c4b31] dark:text-[#fdf6e4] hover:opacity-70">&times;</button>
+            <div className="bg-[#fdf6e4] dark:bg-[#3a342a] border-4 border-[#5c4b31] dark:border-[#e5d8b4] rounded-lg p-6 max-w-sm w-full text-center text-[#5c4b31] dark:text-[#fdf6e4] font-serif relative animate-slide-in" onClick={(e) => e.stopPropagation()}>
+                <button onClick={onClose} className="absolute top-2 right-2 text-2xl leading-none text-[#5c4b31] dark:text-[#fdf6e4] hover:opacity-70">&times;</button>
                 <h2 className="text-5xl font-extrabold uppercase tracking-widest mb-4">WANTED</h2>
                 <div className="w-24 h-24 mx-auto mb-4 bg-[#e5d8b4] dark:bg-[#5c4b31] rounded-full flex items-center justify-center border-2 border-current">
                     {React.cloneElement(iconMap[goal.category], { className: "w-12 h-12" })}
@@ -50,7 +48,7 @@ const ShareGoalModal: React.FC<{ goal: Goal | null; onClose: () => void; }> = ({
 };
 
 
-const ScoreRing: React.FC<{ score: number; label: string, colorClass: string }> = ({ score, label, colorClass }) => {
+const ScoreRing: React.FC<{ score: number; label: string, color: typeof ringColorMap[keyof typeof ringColorMap] }> = ({ score, label, color }) => {
     const radius = 52;
     const circumference = 2 * Math.PI * radius;
     const [offset, setOffset] = useState(circumference);
@@ -63,11 +61,17 @@ const ScoreRing: React.FC<{ score: number; label: string, colorClass: string }> 
     return (
         <div className="flex flex-col items-center justify-center relative">
             <svg className="w-32 h-32 transform -rotate-90">
-                <circle className="stroke-slate-200 dark:stroke-slate-700" strokeWidth="10" fill="transparent" r={radius} cx="64" cy="64" />
+                <defs>
+                    <linearGradient id={`gradient-${label}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor={color.stop1} />
+                        <stop offset="100%" stopColor={color.stop2} />
+                    </linearGradient>
+                </defs>
+                <circle className="stroke-slate-200 dark:stroke-slate-700" strokeWidth="12" fill="transparent" r={radius} cx="64" cy="64" />
                 <circle
-                    className={`${colorClass}`}
+                    stroke={`url(#gradient-${label})`}
                     style={{ strokeDashoffset: offset, transition: 'stroke-dashoffset 1s ease-out' }}
-                    strokeWidth="10"
+                    strokeWidth="12"
                     strokeDasharray={circumference}
                     strokeLinecap="round"
                     fill="transparent"
@@ -77,8 +81,8 @@ const ScoreRing: React.FC<{ score: number; label: string, colorClass: string }> 
                 />
             </svg>
             <div className="absolute flex flex-col items-center">
-                <span className={`text-3xl font-bold ${colorClass.replace('stroke', 'text')}`}>{score}</span>
-                <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{label}</span>
+                <span className={`text-3xl font-bold ${color.text}`}>{score}</span>
+                <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">{label}</span>
             </div>
         </div>
     );
@@ -137,7 +141,7 @@ const GoalSetter: React.FC<{ result: AnalysisResult; goals: Goal[]; onGoalsUpdat
                 <TargetIcon className="w-6 h-6 text-amber-500" />
                 Set Your Goals
             </h3>
-            <div className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm">
+            <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl shadow-inner">
                 <h4 className="font-semibold text-slate-800 dark:text-slate-100 mb-2">Suggested For You</h4>
                 <div className="flex flex-col sm:flex-row gap-2 mb-4">
                     {suggestedGoals.map(sg => (
@@ -150,7 +154,7 @@ const GoalSetter: React.FC<{ result: AnalysisResult; goals: Goal[]; onGoalsUpdat
                 <h4 className="font-semibold text-slate-800 dark:text-slate-100 mb-2">Your Current Goals</h4>
                 <div className="space-y-2 mb-4">
                     {goals.length > 0 ? goals.map(goal => (
-                        <div key={goal.id} className="flex items-center justify-between p-2 bg-slate-50 dark:bg-slate-700/50 rounded-md group">
+                        <div key={goal.id} className="flex items-center justify-between p-2 bg-slate-100 dark:bg-slate-700/50 rounded-md group">
                             <div className="flex items-center">
                                 <input type="checkbox" id={`goal-${goal.id}`} checked={goal.completed} onChange={() => handleToggleGoal(goal.id)} className="w-4 h-4 text-emerald-600 bg-gray-100 border-gray-300 rounded focus:ring-emerald-500 dark:focus:ring-emerald-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                 <label htmlFor={`goal-${goal.id}`} className={`ml-2 text-sm font-medium ${goal.completed ? 'line-through text-slate-400' : 'text-slate-900 dark:text-slate-300'}`}>{goal.text}</label>
@@ -213,50 +217,52 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
 
 
   return (
-    <div className="p-1 w-full animate-fade-in max-w-2xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto">
       {showApNotification && (
-         <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-amber-400/90 dark:bg-amber-500/90 text-slate-900 dark:text-white font-bold py-2 px-4 rounded-full shadow-lg z-20 flex items-center gap-2 animate-fade-in-down">
+         <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-amber-400/90 dark:bg-amber-500/90 text-slate-900 dark:text-white font-bold py-2 px-4 rounded-full shadow-lg z-20 flex items-center gap-2 animate-slide-in">
             <AuraPointsIcon className="w-5 h-5" />
             <span>+100 Aura Points Earned!</span>
          </div>
       )}
       <ShareGoalModal goal={selectedGoalToShare} onClose={() => setIsShareModalOpen(false)} />
 
-      <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2 text-center">
-        {isChaosMode ? "Your Chaotic Aura" : "Your Wellness Aura"}
-      </h2>
-      <p className="text-slate-600 dark:text-slate-400 mb-6 text-center">Here's what your body is telling you.</p>
+      <div className="interactive-card rounded-xl shadow-lg p-6 sm:p-8">
+        <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2 text-center">
+          {isChaosMode ? "Your Chaotic Aura" : "Your Wellness Aura"}
+        </h2>
+        <p className="text-slate-600 dark:text-slate-400 mb-6 text-center">Here's what your body is telling you.</p>
 
-      {/* Scores */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 bg-white dark:bg-slate-800 p-4 rounded-xl shadow-md">
-        <ScoreRing score={modifiedResult.scores.nutrition} label="Nutrition" colorClass={ringColorMap.nutrition} />
-        <ScoreRing score={modifiedResult.scores.sleep} label="Sleep" colorClass={ringColorMap.sleep} />
-        <ScoreRing score={modifiedResult.scores.stress} label="Stress" colorClass={ringColorMap.stress} />
-        <ScoreRing score={modifiedResult.scores.hydration} label="Hydration" colorClass={ringColorMap.hydration} />
-      </div>
+        {/* Scores */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl shadow-inner">
+          <ScoreRing score={modifiedResult.scores.nutrition} label="Nutrition" color={ringColorMap.nutrition} />
+          <ScoreRing score={modifiedResult.scores.sleep} label="Sleep" color={ringColorMap.sleep} />
+          <ScoreRing score={modifiedResult.scores.stress} label="Stress" color={ringColorMap.stress} />
+          <ScoreRing score={modifiedResult.scores.hydration} label="Hydration" color={ringColorMap.hydration} />
+        </div>
 
-      {/* Key Findings */}
-      <div className="mb-8">
-        <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">Key Findings</h3>
-        <div className="space-y-3">
-          {modifiedResult.keyFindings.map((finding, index) => (
-            <div key={index} className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm flex items-start gap-4">
-              <div className="flex-shrink-0 bg-slate-100 dark:bg-slate-700 p-3 rounded-full">{iconMap[finding.icon]}</div>
-              <div>
-                <h4 className="font-semibold text-slate-800 dark:text-slate-100">{finding.title}</h4>
-                <p className="text-slate-600 dark:text-slate-400 text-sm">{finding.description}</p>
+        {/* Key Findings */}
+        <div className="mb-8">
+          <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">Key Findings</h3>
+          <div className="space-y-3">
+            {modifiedResult.keyFindings.map((finding, index) => (
+              <div key={index} className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg flex items-start gap-4">
+                <div className="flex-shrink-0 bg-white dark:bg-slate-800 p-3 rounded-full shadow-sm">{iconMap[finding.icon]}</div>
+                <div>
+                  <h4 className="font-semibold text-slate-800 dark:text-slate-100">{finding.title}</h4>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm">{finding.description}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
       
       {/* Recommendations */}
-       <div className="mb-8">
+       <div className="my-8 interactive-card rounded-xl shadow-lg p-6 sm:p-8">
         <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">Your Personalized Plan</h3>
          <div className="space-y-4">
             {modifiedResult.recommendations.map((rec, index) => (
-                <div key={index} className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm">
+                <div key={index} className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg">
                     <h4 className="font-bold text-slate-800 dark:text-slate-100 mb-2">{rec.title}</h4>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">{rec.description}</p>
                     <ul className="space-y-2">
@@ -273,11 +279,13 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
       </div>
       
       {/* Goal Setter */}
-      <GoalSetter result={modifiedResult} goals={goals} onGoalsUpdate={onGoalsUpdate} onShare={handleShareGoal} />
+      <div className="interactive-card rounded-xl shadow-lg p-6 sm:p-8">
+        <GoalSetter result={modifiedResult} goals={goals} onGoalsUpdate={onGoalsUpdate} onShare={handleShareGoal} />
+      </div>
 
       <button
         onClick={onReset}
-        className="w-full bg-slate-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-slate-800 dark:bg-slate-600 dark:hover:bg-slate-500 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-slate-400 dark:focus:ring-slate-500 flex items-center justify-center gap-2"
+        className="w-full mt-8 bg-slate-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-slate-700 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:focus:ring-slate-500 flex items-center justify-center gap-2"
       >
         <RestartIcon className="w-5 h-5"/>
         <span>Analyze Again</span>

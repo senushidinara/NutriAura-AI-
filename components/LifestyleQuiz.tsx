@@ -24,11 +24,12 @@ const LifestyleQuiz: React.FC<LifestyleQuizProps> = ({ onSubmit }) => {
     onSubmit(answers);
   };
   
-  const sliderThumbClass = "appearance-none w-5 h-5 bg-white dark:bg-slate-300 rounded-full shadow-md border-2 border-emerald-500 cursor-pointer";
+  const sliderThumbClass = "appearance-none w-5 h-5 bg-white dark:bg-slate-200 rounded-full shadow-md border-2 border-emerald-500 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 dark:focus:ring-offset-slate-800";
   const sliderTrackClass = "w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full";
 
   return (
-    <div className="p-4 w-full animate-fade-in">
+    <div className="w-full interactive-card rounded-xl shadow-lg p-6 sm:p-8">
+      <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 mb-2 text-center">Step 2 of 2: Lifestyle</p>
       <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2 text-center">Lifestyle Intake</h2>
       <p className="text-slate-600 dark:text-slate-400 mb-6 text-center">Tell us about your recent habits. Be honest!</p>
       
@@ -47,7 +48,7 @@ const LifestyleQuiz: React.FC<LifestyleQuizProps> = ({ onSubmit }) => {
               onChange={(e) => handleChange('sleepHours', parseFloat(e.target.value))}
               className={`w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:${sliderThumbClass} [&::-moz-range-thumb]:${sliderThumbClass}`}
             />
-            <span className="font-bold text-emerald-600 dark:text-emerald-400 w-16 text-center">{answers.sleepHours.toFixed(1)} hrs</span>
+            <span className="font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 rounded-md py-1 px-2 w-20 text-center">{answers.sleepHours.toFixed(1)} hrs</span>
           </div>
         </div>
 
@@ -64,7 +65,7 @@ const LifestyleQuiz: React.FC<LifestyleQuizProps> = ({ onSubmit }) => {
               onChange={(e) => handleChange('stressLevel', parseInt(e.target.value, 10))}
                className={`w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:${sliderThumbClass} [&::-moz-range-thumb]:${sliderThumbClass}`}
             />
-            <span className="font-bold text-emerald-600 dark:text-emerald-400 w-16 text-center">{answers.stressLevel}</span>
+            <span className="font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 rounded-md py-1 px-2 w-20 text-center">{answers.stressLevel}</span>
           </div>
         </div>
         
@@ -81,7 +82,7 @@ const LifestyleQuiz: React.FC<LifestyleQuizProps> = ({ onSubmit }) => {
               onChange={(e) => handleChange('energyLevel', parseInt(e.target.value, 10))}
                className={`w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:${sliderThumbClass} [&::-moz-range-thumb]:${sliderThumbClass}`}
             />
-            <span className="font-bold text-emerald-600 dark:text-emerald-400 w-16 text-center">{answers.energyLevel}</span>
+            <span className="font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 rounded-md py-1 px-2 w-20 text-center">{answers.energyLevel}</span>
           </div>
         </div>
 
@@ -90,7 +91,7 @@ const LifestyleQuiz: React.FC<LifestyleQuizProps> = ({ onSubmit }) => {
            <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-2">How would you describe your diet?</label>
            <div className="grid grid-cols-2 gap-2">
              {['Very Healthy', 'Mostly Healthy', 'Average', 'Unhealthy'].map(option => (
-                <button type="button" key={option} onClick={() => handleChange('dietQuality', option)} className={`p-2 rounded-lg text-sm transition ${answers.dietQuality === option ? 'bg-emerald-500 text-white shadow' : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600'}`}>
+                <button type="button" key={option} onClick={() => handleChange('dietQuality', option)} className={`p-2 rounded-lg text-sm transition-all duration-200 font-semibold ${answers.dietQuality === option ? 'bg-emerald-500 text-white shadow ring-2 ring-emerald-300' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600'}`}>
                     {option}
                 </button>
              ))}
@@ -102,7 +103,7 @@ const LifestyleQuiz: React.FC<LifestyleQuizProps> = ({ onSubmit }) => {
            <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-2">How active are you weekly?</label>
            <div className="grid grid-cols-2 gap-2">
              {['Sedentary', 'Light', 'Moderate', 'Very Active'].map(option => (
-                <button type="button" key={option} onClick={() => handleChange('activityLevel', option)} className={`p-2 rounded-lg text-sm transition ${answers.activityLevel === option ? 'bg-emerald-500 text-white shadow' : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600'}`}>
+                <button type="button" key={option} onClick={() => handleChange('activityLevel', option)} className={`p-2 rounded-lg text-sm transition-all duration-200 font-semibold ${answers.activityLevel === option ? 'bg-emerald-500 text-white shadow ring-2 ring-emerald-300' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600'}`}>
                     {option}
                 </button>
              ))}
@@ -111,7 +112,7 @@ const LifestyleQuiz: React.FC<LifestyleQuizProps> = ({ onSubmit }) => {
 
         <button
           type="submit"
-          className="w-full bg-amber-400 text-amber-900 font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-amber-500 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-amber-300 dark:focus:ring-amber-600"
+          className="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-amber-500/40 hover:from-amber-500 hover:to-orange-600 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-amber-300 dark:focus:ring-orange-600"
         >
           Submit & Analyze
         </button>

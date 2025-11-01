@@ -31,6 +31,19 @@ const communityTips = [
     }
 ];
 
+const PostSkeleton: React.FC = () => (
+    <div className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
+        <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full shimmer-bg"></div>
+            <div className="h-4 w-24 rounded shimmer-bg"></div>
+        </div>
+        <div className="mt-4 space-y-2">
+            <div className="h-3 w-full rounded shimmer-bg"></div>
+            <div className="h-3 w-5/6 rounded shimmer-bg"></div>
+        </div>
+    </div>
+);
+
 const WellnessChallenges: React.FC = () => {
     const [challenges, setChallenges] = useState<Challenge[]>([]);
     const [joinedChallenges, setJoinedChallenges] = useState<string[]>([]);
@@ -46,7 +59,7 @@ const WellnessChallenges: React.FC = () => {
     };
 
     return (
-        <div className="mb-8">
+        <div className="interactive-card rounded-xl shadow-lg p-6 sm:p-8 mb-8">
             <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center gap-2">
                 <TrophyIcon className="w-6 h-6 text-amber-500" />
                 Community Challenges
@@ -55,7 +68,7 @@ const WellnessChallenges: React.FC = () => {
                 {challenges.map(challenge => {
                     const isJoined = joinedChallenges.includes(challenge.id);
                     return (
-                        <div key={challenge.id} className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm flex items-center justify-between gap-4">
+                        <div key={challenge.id} className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg flex items-center justify-between gap-4">
                             <div className="flex items-start gap-3">
                                 <div className={`p-2 rounded-full ${isJoined ? 'bg-slate-200 dark:bg-slate-700' : 'bg-amber-100 dark:bg-amber-900/50'}`}>
                                     <challenge.icon className={`w-6 h-6 ${isJoined ? 'text-slate-400' : 'text-amber-500'}`} />
@@ -86,14 +99,14 @@ const WellnessChallenges: React.FC = () => {
 
 const CommunityTips: React.FC = () => {
     return (
-        <div className="mb-8">
+        <div className="interactive-card rounded-xl shadow-lg p-6 sm:p-8 mb-8">
             <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center gap-2">
                 <LeafIcon className="w-6 h-6 text-emerald-500" />
                 Community Tips
             </h3>
             <div className="space-y-3">
                 {communityTips.map((item, index) => (
-                    <div key={index} className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm">
+                    <div key={index} className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
                         <p className="text-slate-600 dark:text-slate-300 text-sm">"{item.tip}"</p>
                     </div>
                 ))}
@@ -105,11 +118,16 @@ const CommunityTips: React.FC = () => {
 
 const ForumScreen: React.FC = () => {
     const [posts, setPosts] = useState<ForumPost[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [newPostContent, setNewPostContent] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
+      // Simulate fetching data
+      setTimeout(() => {
         setPosts(getPosts());
+        setIsLoading(false);
+      }, 700);
     }, []);
 
     const handlePostSubmit = useCallback((e: React.FormEvent) => {
@@ -131,42 +149,48 @@ const ForumScreen: React.FC = () => {
     }, []);
 
     return (
-        <div className="w-full animate-fade-in">
+        <div className="w-full">
             <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2 text-center">Community Hub</h2>
             <p className="text-slate-600 dark:text-slate-400 mb-6 text-center">Share your journey, and connect with others.</p>
 
             <WellnessChallenges />
             <CommunityTips />
 
-            {/* New Post Form */}
-            <form onSubmit={handlePostSubmit} className="my-8 bg-white dark:bg-slate-800 p-4 rounded-xl shadow-md">
-                <label htmlFor="new-post" className="sr-only">Share your thoughts</label>
-                <textarea
-                    id="new-post"
-                    value={newPostContent}
-                    onChange={(e) => setNewPostContent(e.target.value)}
-                    placeholder="Share your progress, ask a question..."
-                    className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition"
-                    rows={3}
-                />
-                <div className="flex justify-end mt-3">
-                    <button
-                        type="submit"
-                        disabled={!newPostContent.trim() || isSubmitting}
-                        className="bg-emerald-500 text-white font-bold py-2 px-5 rounded-lg shadow-md hover:bg-emerald-600 transition disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
-                    >
-                        {isSubmitting ? 'Posting...' : 'Post'}
-                    </button>
-                </div>
-            </form>
+            {/* Posts Section */}
+            <div className="interactive-card rounded-xl shadow-lg p-6 sm:p-8">
+                <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">Recent Posts</h3>
+                {/* New Post Form */}
+                <form onSubmit={handlePostSubmit} className="mb-6 bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
+                    <label htmlFor="new-post" className="sr-only">Share your thoughts</label>
+                    <textarea
+                        id="new-post"
+                        value={newPostContent}
+                        onChange={(e) => setNewPostContent(e.target.value)}
+                        placeholder="Share your progress, ask a question..."
+                        className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition"
+                        rows={3}
+                    />
+                    <div className="flex justify-end mt-3">
+                        <button
+                            type="submit"
+                            disabled={!newPostContent.trim() || isSubmitting}
+                            className="bg-emerald-500 text-white font-bold py-2 px-5 rounded-lg shadow-md hover:bg-emerald-600 transition disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed"
+                        >
+                            {isSubmitting ? 'Posting...' : 'Post'}
+                        </button>
+                    </div>
+                </form>
 
-            {/* Posts List */}
-            <div>
-                 <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">Recent Posts</h3>
+                {/* Posts List */}
                 <div className="space-y-4">
-                    {posts.length > 0 ? (
+                    {isLoading ? (
+                        <>
+                            <PostSkeleton />
+                            <PostSkeleton />
+                        </>
+                    ) : posts.length > 0 ? (
                         posts.map(post => (
-                            <div key={post.id} className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm">
+                            <div key={post.id} className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
                                 <div className="flex justify-between items-start">
                                     <div className="flex items-center gap-2">
                                         <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">

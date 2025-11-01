@@ -20,6 +20,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
     }
     setUploadedImage(null);
     setIsCameraReady(false);
+    setError(null);
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'user' },
@@ -30,31 +31,24 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
       }
     } catch (err) {
       console.error("Error accessing camera:", err);
-      setError("Could not access camera. Please check permissions or try uploading a photo.");
+      let message = "Could not access camera. Please check permissions in your browser settings.";
+      if (err instanceof Error && err.name === 'NotAllowedError') {
+        message = "Camera access denied. Please grant permission in your browser's address bar and try again.";
+      }
+      setError(message);
     }
   };
-  
-  useEffect(() => {
-    startCamera();
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   
   const handleCanPlay = () => setIsCameraReady(true);
 
   const handleCapture = useCallback(() => {
-    if (videoRef.current && canvasRef.current) {
+    if (videoRef.current && canvasRef.current && isCameraReady) {
       const video = videoRef.current;
       const canvas = canvasRef.current;
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
       const context = canvas.getContext('2d');
       if (context) {
-        // Flip the image horizontally
         context.translate(canvas.width, 0);
         context.scale(-1, 1);
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -62,7 +56,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
         onCapture(dataUrl);
       }
     }
-  }, [onCapture]);
+  }, [onCapture, isCameraReady]);
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
@@ -78,26 +72,24 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
         onCapture(dataUrl);
       };
       reader.readAsDataURL(file);
-      // Stop camera stream if a file is uploaded
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
         setStream(null);
       }
     }
   };
-  
-  if (error && !navigator.mediaDevices) {
-    return <div className="text-center p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg dark:bg-red-900/20 dark:border-red-500/30 dark:text-red-300">{error}</div>;
-  }
+
+  const hasCamera = !!stream || isCameraReady;
 
   return (
-    <div className="flex flex-col items-center w-full animate-fade-in">
+    <div className="flex flex-col items-center w-full interactive-card rounded-xl shadow-lg p-6 sm:p-8">
+        <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 mb-2">Step 1 of 2: Face Scan</p>
         <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2">AI Face Scan</h2>
         <p className="text-slate-600 dark:text-slate-400 mb-4 text-center">Take a selfie or upload a photo in good lighting.</p>
-        <div className="relative w-full aspect-square max-w-md bg-slate-200 dark:bg-slate-800 rounded-xl overflow-hidden shadow-lg border-4 border-white dark:border-slate-700">
+        <div className="relative w-full aspect-square max-w-md bg-slate-200 dark:bg-slate-700 rounded-xl overflow-hidden shadow-inner border-4 border-white dark:border-slate-700">
             {uploadedImage ? (
               <img src={uploadedImage} alt="User upload preview" className="w-full h-full object-cover" />
-            ) : (
+            ) : hasCamera ? (
               <>
                 <video
                     ref={videoRef}
@@ -113,6 +105,11 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
                      </div>
                 )}
               </>
+            ) : (
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                <CameraIcon className="w-16 h-16 text-slate-400 dark:text-slate-500 mb-4"/>
+                 <button onClick={startCamera} className="bg-emerald-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-emerald-600 transition">Enable Camera</button>
+              </div>
             )}
         </div>
         <canvas ref={canvasRef} className="hidden" />
@@ -122,20 +119,20 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
           <button
               onClick={handleCapture}
               disabled={!isCameraReady || !!uploadedImage}
-              className="w-full bg-emerald-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-emerald-600 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-700 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed disabled:scale-100 flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-emerald-500/40 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-700 disabled:from-slate-400 disabled:to-slate-500 dark:disabled:from-slate-600 dark:disabled:to-slate-700 disabled:cursor-not-allowed disabled:scale-100 disabled:shadow-none flex items-center justify-center gap-2"
           >
               <CameraIcon className="w-6 h-6" />
-              <span>Take a Photo</span>
+              <span>Take Photo & Continue</span>
           </button>
           <button
               onClick={handleUploadClick}
               className="w-full bg-slate-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-slate-700 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:focus:ring-slate-500 flex items-center justify-center gap-2"
           >
               <UploadIcon className="w-6 h-6" />
-              <span>Upload a Photo</span>
+              <span>Or Upload a Photo</span>
           </button>
         </div>
-        {error && <p className="text-sm text-red-500 dark:text-red-400 mt-4">{error}</p>}
+        {error && <p className="text-sm text-red-500 dark:text-red-400 mt-4 text-center">{error}</p>}
     </div>
   );
 };

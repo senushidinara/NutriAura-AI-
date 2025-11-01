@@ -35,7 +35,7 @@ const AnalysisScreen: React.FC<AnalysisScreenProps> = ({ isChaosMode }) => {
   }, [steps.length]);
 
   return (
-    <div className="text-center flex flex-col items-center p-4 animate-fade-in">
+    <div className="interactive-card rounded-xl shadow-lg p-6 sm:p-8 text-center flex flex-col items-center">
       <div className="relative mb-8">
         <div className="w-32 h-32 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
             <LeafIcon className="w-16 h-16 text-emerald-500" />
@@ -53,14 +53,13 @@ const AnalysisScreen: React.FC<AnalysisScreenProps> = ({ isChaosMode }) => {
         </p>
       </div>
       
-      {/* FIX: Removed the non-standard 'jsx' prop from the <style> tag to conform with standard React/TSX syntax. */}
       <style>{`
         @keyframes fade-in-out {
-          0%, 100% { opacity: 0; }
-          20%, 80% { opacity: 1; }
+          0%, 100% { opacity: 0; transform: translateY(10px); }
+          20%, 80% { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in-out {
-          animation: fade-in-out 2.5s infinite;
+          animation: fade-in-out 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
         }
       `}</style>
     </div>
