@@ -1,4 +1,4 @@
-import type { ForumPost } from '../types';
+import type { ForumPost, UserProfile } from '../types';
 
 const FORUM_STORAGE_KEY = 'nutriaura_forum_posts';
 
@@ -50,4 +50,44 @@ export const addPost = (content: string): ForumPost[] => {
         console.error("Failed to save new post to localStorage", error);
     }
     return updatedPosts;
+};
+
+
+// --- Leaderboard Service ---
+export interface LeaderboardUser {
+    rank: number;
+    name: string;
+    level: number;
+    totalAp: number;
+}
+
+// In a real app, this data would come from a backend.
+// We simulate it here for demonstration.
+const simulatedUsers = [
+    { name: 'WellnessExplorer', level: 12, totalAp: 8850 },
+    { name: 'GlowingGrace', level: 10, totalAp: 6200 },
+    { name: 'ZenMaster', level: 15, totalAp: 12500 },
+    { name: 'HydrationHero', level: 8, totalAp: 4100 },
+    { name: 'NutriNinja', level: 11, totalAp: 7300 },
+];
+
+export const getLeaderboardData = (currentUserProfile: UserProfile): LeaderboardUser[] => {
+    const { level, ap, apForNextLevel } = currentUserProfile;
+    // Calculate total AP for the current user
+    let totalCurrentUserAp = ap;
+    for (let i = 1; i < level; i++) {
+        totalCurrentUserAp += i * 100 + 100;
+    }
+
+    const allUsers = [
+        ...simulatedUsers,
+        { name: 'You', level: currentUserProfile.level, totalAp: totalCurrentUserAp }
+    ];
+
+    return allUsers
+        .sort((a, b) => b.totalAp - a.totalAp)
+        .map((user, index) => ({
+            ...user,
+            rank: index + 1
+        }));
 };

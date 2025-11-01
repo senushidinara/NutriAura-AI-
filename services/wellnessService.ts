@@ -55,9 +55,45 @@ export const saveGoals = (goals: Goal[]): void => {
 // --- Community Challenges ---
 
 const allChallenges: Challenge[] = [
-    { id: 'hydration_challenge_month', title: 'Hydration Challenge', description: 'Drink 2L of water every day for a week.', icon: DropletIcon },
-    { id: 'mindful_eating_week', title: 'Mindful Eating Week', description: 'Eat without distractions for at least one meal a day.', icon: LeafIcon },
-    { id: 'digital_detox_weekend', title: 'Digital Detox Weekend', description: 'Spend a weekend with minimal screen time.', icon: MoonIcon },
+    { 
+      id: 'hydration_challenge_month', 
+      title: '7-Day Hydration Challenge', 
+      description: 'Drink 2L of water every day for a week.', 
+      icon: DropletIcon,
+      duration: '7 Days',
+      details: [
+        "Track your water intake daily.",
+        "Aim for eight 8-ounce (250ml) glasses, which equals about 2 liters.",
+        "Infuse your water with fruit for flavor if you like!",
+        "Avoid sugary drinks and excessive caffeine."
+      ]
+    },
+    { 
+      id: 'mindful_eating_week', 
+      title: 'Mindful Eating Week', 
+      description: 'Eat without distractions for one meal a day.', 
+      icon: LeafIcon,
+      duration: '7 Days',
+      details: [
+        "Choose one meal each day to eat mindfully.",
+        "Put away your phone, turn off the TV, and sit at a table.",
+        "Chew your food slowly and savor each bite.",
+        "Pay attention to your body's hunger and fullness cues."
+      ]
+    },
+    { 
+      id: 'digital_detox_weekend', 
+      title: 'Digital Detox Weekend', 
+      description: 'Spend a weekend with minimal screen time.', 
+      icon: MoonIcon,
+      duration: '48 Hours (Weekend)',
+      details: [
+        "Plan non-screen activities ahead of time (reading, hiking, hobbies).",
+        "Inform friends and family you'll be less available.",
+        "Delete social media apps from your phone for the weekend.",
+        "Focus on being present in the moment."
+      ]
+    },
 ];
 
 export const getChallenges = (): Challenge[] => allChallenges;

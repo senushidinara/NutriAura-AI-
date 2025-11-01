@@ -68,6 +68,8 @@ export interface Challenge {
   title: string;
   description: string;
   icon: React.ElementType;
+  duration: string;
+  details: string[];
 }
 
 export interface UserProfile {

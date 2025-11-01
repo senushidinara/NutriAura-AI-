@@ -1,9 +1,51 @@
 import React, { useState, useCallback } from 'react';
 import type { QuizAnswers } from '../types';
+import { DietHealthyIcon, DietAverageIcon, DietUnhealthyIcon, ActivitySedentaryIcon, ActivityLightIcon, ActivityModerateIcon, ActivityActiveIcon } from './icons';
 
 interface LifestyleQuizProps {
   onSubmit: (answers: QuizAnswers) => void;
 }
+
+const dietOptions = [
+  { value: 'Very Healthy', label: 'Very Healthy', icon: DietHealthyIcon },
+  { value: 'Mostly Healthy', label: 'Mostly Healthy', icon: DietHealthyIcon },
+  { value: 'Average', label: 'Average', icon: DietAverageIcon },
+  { value: 'Unhealthy', label: 'Unhealthy', icon: DietUnhealthyIcon },
+];
+
+const activityOptions = [
+  { value: 'Sedentary', label: 'Sedentary', icon: ActivitySedentaryIcon },
+  { value: 'Light', label: 'Light', icon: ActivityLightIcon },
+  { value: 'Moderate', label: 'Moderate', icon: ActivityModerateIcon },
+  { value: 'Very Active', label: 'Very Active', icon: ActivityActiveIcon },
+];
+
+const RadioCardGroup: React.FC<{
+  options: { value: string; label: string; icon: React.ElementType }[];
+  selectedValue: string;
+  onChange: (value: string) => void;
+}> = ({ options, selectedValue, onChange }) => (
+  <div className="grid grid-cols-2 gap-3">
+    {options.map(({ value, label, icon: Icon }) => {
+      const isSelected = selectedValue === value;
+      return (
+        <button
+          type="button"
+          key={value}
+          onClick={() => onChange(value)}
+          className={`p-3 rounded-lg text-sm transition-all duration-200 font-semibold flex flex-col items-center justify-center gap-2 border-2 ${
+            isSelected
+              ? 'bg-emerald-50 text-emerald-700 border-emerald-500 shadow-md dark:bg-emerald-900/50 dark:text-emerald-300'
+              : 'bg-slate-100 text-slate-700 border-transparent hover:bg-slate-200 dark:bg-slate-700/80 dark:text-slate-200 dark:hover:bg-slate-700'
+          }`}
+        >
+          <Icon className={`w-8 h-8 ${isSelected ? 'text-emerald-500' : 'text-slate-500 dark:text-slate-400'}`} />
+          <span>{label}</span>
+        </button>
+      );
+    })}
+  </div>
+);
 
 const LifestyleQuiz: React.FC<LifestyleQuizProps> = ({ onSubmit }) => {
   const [answers, setAnswers] = useState<QuizAnswers>({
@@ -25,8 +67,7 @@ const LifestyleQuiz: React.FC<LifestyleQuizProps> = ({ onSubmit }) => {
   };
   
   const sliderThumbClass = "appearance-none w-5 h-5 bg-white dark:bg-slate-200 rounded-full shadow-md border-2 border-emerald-500 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 dark:focus:ring-offset-slate-800";
-  const sliderTrackClass = "w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full";
-
+  
   return (
     <div className="w-full interactive-card rounded-xl shadow-lg p-6 sm:p-8">
       <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 mb-2 text-center">Step 2 of 2: Lifestyle</p>
@@ -89,25 +130,21 @@ const LifestyleQuiz: React.FC<LifestyleQuizProps> = ({ onSubmit }) => {
         {/* Diet Quality */}
         <div>
            <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-2">How would you describe your diet?</label>
-           <div className="grid grid-cols-2 gap-2">
-             {['Very Healthy', 'Mostly Healthy', 'Average', 'Unhealthy'].map(option => (
-                <button type="button" key={option} onClick={() => handleChange('dietQuality', option)} className={`p-2 rounded-lg text-sm transition-all duration-200 font-semibold ${answers.dietQuality === option ? 'bg-emerald-500 text-white shadow ring-2 ring-emerald-300' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600'}`}>
-                    {option}
-                </button>
-             ))}
-           </div>
+           <RadioCardGroup
+             options={dietOptions}
+             selectedValue={answers.dietQuality}
+             onChange={(value) => handleChange('dietQuality', value)}
+           />
         </div>
         
         {/* Activity Level */}
          <div>
            <label className="block text-md font-medium text-slate-700 dark:text-slate-300 mb-2">How active are you weekly?</label>
-           <div className="grid grid-cols-2 gap-2">
-             {['Sedentary', 'Light', 'Moderate', 'Very Active'].map(option => (
-                <button type="button" key={option} onClick={() => handleChange('activityLevel', option)} className={`p-2 rounded-lg text-sm transition-all duration-200 font-semibold ${answers.activityLevel === option ? 'bg-emerald-500 text-white shadow ring-2 ring-emerald-300' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600'}`}>
-                    {option}
-                </button>
-             ))}
-           </div>
+           <RadioCardGroup
+             options={activityOptions}
+             selectedValue={answers.activityLevel}
+             onChange={(value) => handleChange('activityLevel', value)}
+           />
         </div>
 
         <button

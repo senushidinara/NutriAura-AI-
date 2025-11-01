@@ -86,12 +86,9 @@ export const TargetIcon: React.FC<IconProps> = ({ className }) => (
 );
 
 export const TrophyIcon: React.FC<IconProps> = ({ className }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 11l3-3m0 0l3 3m-3-3v8m-9 3a9 9 0 1118 0 9 9 0 01-18 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 21V19M8 21V19M16 21V19M5 12H3M19 12H21" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 21c-2.76 0-5-2.24-5-5h10c0 2.76-2.24 5-5 5z" />
-        <path d="M12 16a2 2 0 100-4 2 2 0 000 4z" />
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9a9.75 9.75 0 011.316-5.033 9.75 9.75 0 0114.368 0A9.75 9.75 0 0116.5 18.75z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M18.75 11.25c0-1.036-.286-2.034-.813-2.925m-1.428-.432A4.125 4.125 0 0012 6.375a4.125 4.125 0 00-4.509 1.518M12 6.375V3.75m-3.75 11.25c-2.071 0-3.75-1.679-3.75-3.75S6.179 7.5 8.25 7.5s3.75 1.679 3.75 3.75-1.679 3.75-3.75 3.75zm11.25 0c-2.071 0-3.75-1.679-3.75-3.75s1.679-3.75 3.75-3.75 3.75 1.679 3.75 3.75-1.679 3.75-3.75 3.75z" />
     </svg>
 );
 
@@ -115,7 +112,7 @@ export const BadgeIcon: React.FC<IconProps> = ({ className }) => (
 
 export const AuraPointsIcon: React.FC<IconProps> = ({ className }) => (
     <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m11-12v4m2-2h-4m2 6l2 2m-2-2l-2 2m-3-3l-2-2m2 2l2-2m-2 2l2 2m-2-2l-2 2" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m11-12v4m2-2h-4m2 6l2 2m-2-2l-2 2m-3-3l-2-2m2 2l2 2m-2 2l2 2m-2-2l-2 2" />
     </svg>
 );
 
@@ -139,4 +136,59 @@ export const PizzaIcon: React.FC<IconProps> = ({ className }) => (
         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5,8.5a.5.5,0,1,1-.5-.5A.5.5,0,0,1,16.5,8.5Z" />
         <path strokeLinecap="round" strokeLinejoin="round" d="M15,14a.5.5,0,1,1-.5-.5A.5.5,0,0,1,15,14Z" />
     </svg>
+);
+
+export const DietHealthyIcon: React.FC<IconProps> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 00-7.07-7.07m14.14 0a5 5 0 00-7.07 7.07" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 18a6 6 0 100-12 6 6 0 000 12z" />
+  </svg>
+);
+
+export const DietAverageIcon: React.FC<IconProps> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M14 10a2 2 0 11-4 0 2 2 0 014 0z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15 14H9" />
+  </svg>
+);
+
+export const DietUnhealthyIcon: React.FC<IconProps> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12c0-3.866-3.134-7-7-7s-7 3.134-7 7c0 1.956.8 3.74 2.106 5.002L7 21h10l-2.606-3.998A6.953 6.953 0 0019.5 12zM15 9a.5.5 0 11-1 0 .5.5 0 011 0zM10 9a.5.5 0 11-1 0 .5.5 0 011 0z" />
+  </svg>
+);
+
+export const ActivitySedentaryIcon: React.FC<IconProps> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12l-3-3m0 0l-3 3m3-3v6" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 21a2 2 0 01-2-2v-2h10v2a2 2 0 01-2 2H9zM7 15v-2a2 2 0 012-2h6a2 2 0 012 2v2H7z" />
+    <circle cx="12" cy="7" r="2" />
+  </svg>
+);
+
+export const ActivityLightIcon: React.FC<IconProps> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+  </svg>
+);
+
+export const ActivityModerateIcon: React.FC<IconProps> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+  </svg>
+);
+
+export const ActivityActiveIcon: React.FC<IconProps> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.657 7.343A8 8 0 0117.657 18.657z" />
+  </svg>
+);
+
+export const LeaderboardIcon: React.FC<IconProps> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-2a3 3 0 013-3h0a3 3 0 013 3v2m-6 0h6m-3-12.75a3 3 0 11-6 0 3 3 0 016 0zM21 19v-2a3 3 0 00-3-3h-1.5a3 3 0 00-3 3v2m6 0h-6" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 19v-2a3 3 0 013-3h1.5a3 3 0 013 3v2m-6 0h6" />
+  </svg>
 );
