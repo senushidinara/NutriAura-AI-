@@ -11,7 +11,8 @@ interface ResultsScreenProps {
 }
 
 // FIX: Changed type from 'JSX.Element' to 'React.ReactElement' to resolve 'Cannot find namespace JSX' error.
-const iconMap: { [key: string]: React.ReactElement } = {
+// FIX: Updated type to specify that elements accept a `className` prop, fixing `cloneElement` type error.
+const iconMap: { [key: string]: React.ReactElement<{ className?: string }> } = {
   nutrition: <LeafIcon className="w-6 h-6 text-emerald-500" />,
   sleep: <MoonIcon className="w-6 h-6 text-indigo-500" />,
   stress: <HeartIcon className="w-6 h-6 text-rose-500" />,
