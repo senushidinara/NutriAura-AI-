@@ -264,22 +264,22 @@ const App: React.FC = () => {
             </button>
             <nav className="flex items-center gap-1 sm:gap-2">
                <NavButton targetState={AppState.PROFILE} label="Your Profile">
-                 <ProfileIcon className="w-6 h-6 text-slate-600 dark:text-slate-300" />
+                 <ProfileIcon className="w-7 h-7 text-slate-600 dark:text-slate-300" />
                </NavButton>
                <NavButton targetState={AppState.QUESTS} label="Wellness Quests">
-                 <QuestIcon className="w-6 h-6 text-slate-600 dark:text-slate-300" />
+                 <QuestIcon className="w-7 h-7 text-slate-600 dark:text-slate-300" />
                </NavButton>
                <NavButton targetState={AppState.PROGRESS} label="View Progress">
-                 <ChartBarIcon className="w-6 h-6 text-slate-600 dark:text-slate-300" />
+                 <ChartBarIcon className="w-7 h-7 text-slate-600 dark:text-slate-300" />
                </NavButton>
                <NavButton targetState={AppState.FORUM} label="Community Forum">
-                 <UsersIcon className="w-6 h-6 text-slate-600 dark:text-slate-300" />
+                 <UsersIcon className="w-7 h-7 text-slate-600 dark:text-slate-300" />
                </NavButton>
                <button onClick={toggleChaosMode} className="p-2 rounded-lg hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors no-chaos" aria-label="Toggle Chaos Mode">
-                 <FireIcon className={`w-6 h-6 transition-colors ${isChaosMode ? 'text-red-500' : 'text-slate-600 dark:text-slate-300'}`} />
+                 <FireIcon className={`w-7 h-7 transition-colors ${isChaosMode ? 'text-red-500' : 'text-slate-600 dark:text-slate-300'}`} />
                </button>
                <button onClick={toggleDarkMode} className="p-2 rounded-lg hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors no-chaos" aria-label="Toggle dark mode">
-                {isDarkMode ? <SunIcon className="w-6 h-6 text-amber-400" /> : <MoonIcon className="w-6 h-6 text-slate-600" />}
+                {isDarkMode ? <SunIcon className="w-7 h-7 text-amber-400" /> : <MoonIcon className="w-7 h-7 text-slate-600" />}
                </button>
             </nav>
          </div>

@@ -36,11 +36,11 @@ const QuestsScreen: React.FC<QuestsScreenProps> = ({ onAwardAp }) => {
                             <div key={mission.id} className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg flex items-center justify-between gap-4">
                                 <div className="flex items-start gap-3">
                                     <div className={`p-2 rounded-full ${isCompleted ? 'bg-slate-200 dark:bg-slate-700' : 'bg-emerald-100 dark:bg-emerald-900/50'}`}>
-                                      <mission.icon className={`w-6 h-6 ${isCompleted ? 'text-slate-400' : 'text-emerald-500'}`} />
+                                      <mission.icon className={`w-7 h-7 ${isCompleted ? 'text-slate-400' : 'text-emerald-500'}`} />
                                     </div>
                                     <div className={isCompleted ? 'opacity-60' : ''}>
                                         <h4 className="font-semibold text-slate-800 dark:text-slate-100">{mission.title}</h4>
-                                        <p className="text-slate-600 dark:text-slate-400 text-sm">{mission.description}</p>
+                                        <p className="text-slate-600 dark:text-slate-400 text-base">{mission.description}</p>
                                     </div>
                                 </div>
                                 <div className="flex flex-col items-center gap-1">
@@ -74,7 +74,7 @@ const QuestsScreen: React.FC<QuestsScreenProps> = ({ onAwardAp }) => {
                 <QuestIcon className="w-8 h-8" />
                 Wellness Quests
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 mb-6 text-center">Complete quests to earn Aura Points and level up!</p>
+            <p className="text-lg text-slate-600 dark:text-slate-400 mb-6 text-center">Complete quests to earn Aura Points and level up!</p>
             <div className="interactive-card rounded-xl shadow-lg p-6 sm:p-8">
                 {renderMissionList("Daily Quests", "daily")}
                 {renderMissionList("Weekly Quests", "weekly")}

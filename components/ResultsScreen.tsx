@@ -178,7 +178,7 @@ const GoalSetter: React.FC<{ result: AnalysisResult; goals: Goal[]; onGoalsUpdat
                 <h4 className="font-semibold text-slate-800 dark:text-slate-100 mb-2">Suggested For You</h4>
                 <div className="flex flex-col sm:flex-row gap-2 mb-4">
                     {suggestedGoals.map(sg => (
-                        <button key={sg.text} onClick={() => handleAddGoal(sg.text, sg.category as Goal['category'])} className="flex-1 text-left text-sm p-2 bg-emerald-50 dark:bg-emerald-900/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 rounded-md transition text-emerald-800 dark:text-emerald-300">
+                        <button key={sg.text} onClick={() => handleAddGoal(sg.text, sg.category as Goal['category'])} className="flex-1 text-left text-base p-2 bg-emerald-50 dark:bg-emerald-900/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 rounded-md transition text-emerald-800 dark:text-emerald-300">
                            + {sg.text}
                         </button>
                     ))}
@@ -190,18 +190,18 @@ const GoalSetter: React.FC<{ result: AnalysisResult; goals: Goal[]; onGoalsUpdat
                         <div key={goal.id} className="flex items-center justify-between p-2 bg-slate-100 dark:bg-slate-700/50 rounded-md group">
                             <div className="flex items-center">
                                 <input type="checkbox" id={`goal-${goal.id}`} checked={goal.completed} onChange={() => handleToggleGoal(goal.id)} className="w-4 h-4 text-emerald-600 bg-gray-100 border-gray-300 rounded focus:ring-emerald-500 dark:focus:ring-emerald-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                                <label htmlFor={`goal-${goal.id}`} className={`ml-2 text-sm font-medium ${goal.completed ? 'line-through text-slate-400' : 'text-slate-900 dark:text-slate-300'}`}>{goal.text}</label>
+                                <label htmlFor={`goal-${goal.id}`} className={`ml-3 text-base ${goal.completed ? 'line-through text-slate-400' : 'text-slate-900 dark:text-slate-300'}`}>{goal.text}</label>
                             </div>
                             <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button onClick={() => onShare(goal)} className="p-1 text-slate-400 hover:text-emerald-500" title="Share Goal"><ShareIcon className="w-4 h-4" /></button>
                                 <button onClick={() => handleDeleteGoal(goal.id)} className="p-1 text-slate-400 hover:text-rose-500" title="Remove Goal">&times;</button>
                             </div>
                         </div>
-                    )) : <p className="text-sm text-slate-500 dark:text-slate-400">No goals set yet. Add one!</p>}
+                    )) : <p className="text-base text-slate-500 dark:text-slate-400">No goals set yet. Add one!</p>}
                 </div>
 
                 <form onSubmit={handleAddCustomGoal} className="flex gap-2">
-                    <input type="text" value={customGoal} onChange={(e) => setCustomGoal(e.target.value)} placeholder="Add a custom goal..." className="flex-grow p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition text-sm" />
+                    <input type="text" value={customGoal} onChange={(e) => setCustomGoal(e.target.value)} placeholder="Add a custom goal..." className="flex-grow p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition text-base" />
                     <button type="submit" className="bg-emerald-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-emerald-600 transition disabled:bg-slate-400" disabled={!customGoal.trim()}>Add</button>
                 </form>
             </div>
@@ -248,6 +248,14 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
     return chaoticResult;
   }, [result, isChaosMode]);
 
+  const findingIconMap = {
+    nutrition: <LeafIcon className="w-8 h-8 text-emerald-500" />,
+    sleep: <MoonIcon className="w-8 h-8 text-indigo-500" />,
+    stress: <HeartIcon className="w-8 h-8 text-rose-500" />,
+    hydration: <DropletIcon className="w-8 h-8 text-sky-500" />,
+    pizza: <PizzaIcon className="w-8 h-8 text-amber-500" />,
+  };
+
 
   return (
     <div className="w-full max-w-2xl mx-auto">
@@ -263,7 +271,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
         <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2 text-center">
           {isChaosMode ? "Your Chaotic Aura" : "Your Wellness Aura"}
         </h2>
-        <p className="text-slate-600 dark:text-slate-400 mb-6 text-center">Here's what your body is telling you.</p>
+        <p className="text-lg text-slate-600 dark:text-slate-400 mb-6 text-center">Here's what your body is telling you.</p>
 
         {/* Scores */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl shadow-inner">
@@ -279,10 +287,10 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
           <div className="space-y-3">
             {modifiedResult.keyFindings.map((finding, index) => (
               <div key={index} className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg flex items-start gap-4">
-                <div className="flex-shrink-0 bg-white dark:bg-slate-800 p-3 rounded-full shadow-sm">{iconMap[finding.icon]}</div>
+                <div className="flex-shrink-0 bg-white dark:bg-slate-800 p-3 rounded-full shadow-sm">{findingIconMap[finding.icon]}</div>
                 <div>
                   <h4 className="font-semibold text-slate-800 dark:text-slate-100">{finding.title}</h4>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">{finding.description}</p>
+                  <p className="text-slate-600 dark:text-slate-400 text-base">{finding.description}</p>
                 </div>
               </div>
             ))}
@@ -297,10 +305,10 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
             {modifiedResult.recommendations.map((rec, index) => (
                 <div key={index} className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg">
                     <h4 className="font-bold text-slate-800 dark:text-slate-100 mb-2">{rec.title}</h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">{rec.description}</p>
+                    <p className="text-base text-slate-600 dark:text-slate-400 mb-3">{rec.description}</p>
                     <ul className="space-y-2">
                         {rec.items.map((item, itemIndex) => (
-                            <li key={itemIndex} className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
+                            <li key={itemIndex} className="flex items-start gap-2 text-base text-slate-700 dark:text-slate-300">
                                 <span className="text-emerald-500 dark:text-emerald-400 mt-1">&#10003;</span>
                                 <span>{item}</span>
                             </li>
@@ -322,7 +330,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
         className="w-full mt-8 bg-slate-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-slate-700 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:focus:ring-slate-500 flex items-center justify-center gap-2"
       >
         <RestartIcon className="w-5 h-5"/>
-        <span>Analyze Again</span>
+        <span className="text-lg">Analyze Again</span>
       </button>
     </div>
   );

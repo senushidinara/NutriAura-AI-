@@ -93,12 +93,12 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, imagePreview =
 
   const renderInitialState = () => (
     <div className="absolute inset-0 flex flex-col items-center justify-center p-4 gap-4">
-      <button onClick={startCamera} className="w-full max-w-xs bg-emerald-500 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-emerald-600 transition flex items-center justify-center gap-2">
-        <CameraIcon className="w-6 h-6" />
+      <button onClick={startCamera} className="w-full text-lg max-w-xs bg-emerald-500 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-emerald-600 transition flex items-center justify-center gap-3">
+        <CameraIcon className="w-7 h-7" />
         Use Camera
       </button>
-      <button onClick={handleUploadClick} className="w-full max-w-xs bg-slate-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-slate-700 transition flex items-center justify-center gap-2">
-        <UploadIcon className="w-6 h-6" />
+      <button onClick={handleUploadClick} className="w-full text-lg max-w-xs bg-slate-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-slate-700 transition flex items-center justify-center gap-3">
+        <UploadIcon className="w-7 h-7" />
         Upload Photo
       </button>
     </div>
@@ -130,7 +130,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, imagePreview =
     <div className="flex flex-col items-center w-full interactive-card rounded-xl shadow-lg p-6 sm:p-8">
         <Stepper currentStep={1} totalSteps={3} />
         <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-4 mb-2">AI Face Scan</h2>
-        <p className="text-slate-600 dark:text-slate-400 mb-4 text-center">Take a selfie or upload a photo in good lighting.</p>
+        <p className="text-lg text-slate-600 dark:text-slate-400 mb-4 text-center">Take a selfie or upload a photo in good lighting.</p>
         
         <div className="relative w-full aspect-square max-w-md bg-slate-200 dark:bg-slate-700 rounded-xl overflow-hidden shadow-inner border-4 border-white dark:border-slate-700">
             {imagePreview ? renderPreview() : stream ? renderCameraView() : renderInitialState()}
@@ -143,7 +143,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, imagePreview =
           {imagePreview && onConfirm ? (
              <button
               onClick={onConfirm}
-              className="w-full bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-emerald-500/40 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-700 flex items-center justify-center gap-2"
+              className="w-full text-lg bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-emerald-500/40 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-700 flex items-center justify-center gap-2"
             >
               <span>Confirm & Continue</span>
             </button>
@@ -151,9 +151,9 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, imagePreview =
             <button
                 onClick={handleCapture}
                 disabled={!isCameraReady}
-                className="w-full bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-emerald-500/40 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-700 disabled:from-slate-400 disabled:to-slate-500 dark:disabled:from-slate-600 dark:disabled:to-slate-700 disabled:cursor-not-allowed disabled:scale-100 disabled:shadow-none flex items-center justify-center gap-2"
+                className="w-full text-lg bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-emerald-500/40 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-700 disabled:from-slate-400 disabled:to-slate-500 dark:disabled:from-slate-600 dark:disabled:to-slate-700 disabled:cursor-not-allowed disabled:scale-100 disabled:shadow-none flex items-center justify-center gap-2"
             >
-                <CameraIcon className="w-6 h-6" />
+                <CameraIcon className="w-7 h-7" />
                 <span>Take Photo</span>
             </button>
           ) : null }

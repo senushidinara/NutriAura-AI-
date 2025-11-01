@@ -19,14 +19,14 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ profile, earnedBadges, on
                 <ProfileIcon className="w-8 h-8"/>
                 Your Profile
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 mb-6">Your wellness journey and achievements.</p>
+            <p className="text-lg text-slate-600 dark:text-slate-400 mb-6">Your wellness journey and achievements.</p>
 
             <div className="interactive-card rounded-xl shadow-lg p-6 sm:p-8">
                 {/* Level and AP */}
                 <div className="p-6 rounded-lg mb-8 bg-slate-100 dark:bg-slate-700/50 shadow-inner">
                     <div className="flex justify-between items-baseline mb-2">
                         <span className="text-lg font-bold text-emerald-500">Level {profile.level}</span>
-                        <span className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                        <span className="text-base text-slate-500 dark:text-slate-400 flex items-center gap-1">
                             <AuraPointsIcon className="w-4 h-4 text-amber-500"/> {profile.ap} / {profile.apForNextLevel} AP
                         </span>
                     </div>
@@ -49,8 +49,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ profile, earnedBadges, on
                                     <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center ${isEarned ? 'bg-amber-200 dark:bg-amber-800' : 'bg-slate-200 dark:bg-slate-700'}`}>
                                         <badge.icon className={`w-8 h-8 ${isEarned ? 'text-amber-500' : 'text-slate-400'}`} />
                                     </div>
-                                    <h4 className={`font-bold text-sm ${isEarned ? 'text-amber-800 dark:text-amber-200' : 'text-slate-600 dark:text-slate-400'}`}>{badge.title}</h4>
-                                    <p className={`text-xs ${isEarned ? 'text-amber-600 dark:text-amber-400' : 'text-slate-500 dark:text-slate-500'}`}>{badge.description}</p>
+                                    <h4 className={`font-bold text-base ${isEarned ? 'text-amber-800 dark:text-amber-200' : 'text-slate-600 dark:text-slate-400'}`}>{badge.title}</h4>
+                                    <p className={`text-sm ${isEarned ? 'text-amber-600 dark:text-amber-400' : 'text-slate-500 dark:text-slate-500'}`}>{badge.description}</p>
                                 </div>
                             );
                         })}
@@ -64,7 +64,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ profile, earnedBadges, on
                         className="w-full text-left p-4 bg-slate-100 dark:bg-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg flex items-center justify-between transition-colors"
                     >
                         <div className="flex items-center gap-3">
-                            <BrainCircuitIcon className="w-6 h-6 text-emerald-500"/>
+                            <BrainCircuitIcon className="w-7 h-7 text-emerald-500"/>
                             <div>
                                 <h4 className="font-semibold text-slate-800 dark:text-slate-100">How Our AI Works</h4>
                                 <p className="text-sm text-slate-500 dark:text-slate-400">Learn about our technology.</p>

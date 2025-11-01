@@ -80,11 +80,11 @@ const WellnessChallenges: React.FC = () => {
                         <div key={challenge.id} onClick={() => setSelectedChallenge(challenge)} className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition">
                             <div className="flex items-start gap-3">
                                 <div className={`p-2 rounded-full ${isJoined ? 'bg-slate-200 dark:bg-slate-700' : 'bg-amber-100 dark:bg-amber-900/50'}`}>
-                                    <challenge.icon className={`w-6 h-6 ${isJoined ? 'text-slate-400' : 'text-amber-500'}`} />
+                                    <challenge.icon className={`w-7 h-7 ${isJoined ? 'text-slate-400' : 'text-amber-500'}`} />
                                 </div>
                                 <div>
                                     <h4 className="font-semibold text-slate-800 dark:text-slate-100">{challenge.title}</h4>
-                                    <p className="text-slate-600 dark:text-slate-400 text-sm">{challenge.description}</p>
+                                    <p className="text-slate-600 dark:text-slate-400 text-base">{challenge.description}</p>
                                 </div>
                             </div>
                             <button
@@ -122,7 +122,7 @@ const Leaderboard: React.FC = () => {
                         <span className="font-bold text-lg w-6 text-slate-500 dark:text-slate-400">{user.rank}</span>
                         <div>
                             <h4 className="font-semibold text-slate-800 dark:text-slate-100">{user.name}</h4>
-                            <p className="text-slate-500 dark:text-slate-400 text-sm">Level {user.level}</p>
+                            <p className="text-slate-500 dark:text-slate-400 text-base">Level {user.level}</p>
                         </div>
                     </div>
                     <div className="text-right">
@@ -217,7 +217,7 @@ const ForumScreen: React.FC = () => {
     return (
         <div className="w-full">
             <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2 text-center">Community Hub</h2>
-            <p className="text-slate-600 dark:text-slate-400 mb-6 text-center">Share your journey, and connect with others.</p>
+            <p className="text-lg text-slate-600 dark:text-slate-400 mb-6 text-center">Share your journey, and connect with others.</p>
             
             <div className="mb-6 flex justify-center">
                 <div className="bg-slate-200 dark:bg-slate-700 p-1 rounded-lg flex gap-1">

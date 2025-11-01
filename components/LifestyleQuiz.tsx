@@ -34,7 +34,7 @@ const RadioCardGroup: React.FC<{
           type="button"
           key={value}
           onClick={() => onChange(value)}
-          className={`relative p-3 rounded-lg text-sm transition-all duration-200 font-semibold flex flex-col items-center justify-center gap-2 border-2 ${
+          className={`relative p-3 rounded-lg text-base transition-all duration-200 font-semibold flex flex-col items-center justify-center gap-2 border-2 ${
             isSelected
               ? 'bg-emerald-50 text-emerald-700 border-emerald-500 shadow-md dark:bg-emerald-900/50 dark:text-emerald-300'
               : 'bg-slate-100 text-slate-700 border-transparent hover:bg-slate-200 dark:bg-slate-700/80 dark:text-slate-200 dark:hover:bg-slate-700'
@@ -115,7 +115,7 @@ const LifestyleQuiz: React.FC<LifestyleQuizProps> = ({ onSubmit }) => {
     <div className="w-full interactive-card rounded-xl shadow-lg p-6 sm:p-8">
       <Stepper currentStep={2} totalSteps={3} />
       <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mt-4 mb-2 text-center">Lifestyle Intake</h2>
-      <p className="text-slate-600 dark:text-slate-400 mb-6 text-center">Tell us about your recent habits. Be honest!</p>
+      <p className="text-lg text-slate-600 dark:text-slate-400 mb-6 text-center">Tell us about your recent habits. Be honest!</p>
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <RangeSlider 
@@ -160,7 +160,7 @@ const LifestyleQuiz: React.FC<LifestyleQuizProps> = ({ onSubmit }) => {
 
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-amber-500/40 hover:from-amber-500 hover:to-orange-600 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-amber-300 dark:focus:ring-orange-600"
+          className="w-full text-lg bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-amber-500/40 hover:from-amber-500 hover:to-orange-600 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-amber-300 dark:focus:ring-orange-600"
         >
           Submit & Analyze
         </button>

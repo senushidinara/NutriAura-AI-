@@ -118,7 +118,7 @@ const ProgressScreen: React.FC<ProgressScreenProps> = ({ history }) => {
                 <ChartBarIcon className="w-8 h-8"/>
                 Your Progress
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 mb-6 text-center">Track your wellness scores over time.</p>
+            <p className="text-lg text-slate-600 dark:text-slate-400 mb-6 text-center">Track your wellness scores over time.</p>
 
             <div className="interactive-card rounded-xl shadow-lg p-6 sm:p-8">
                 {history.length === 0 ? (
