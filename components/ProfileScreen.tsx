@@ -1,14 +1,15 @@
 import React from 'react';
 import type { UserProfile, Badge } from '../types';
 import { getBadges } from '../services/wellnessService';
-import { ProfileIcon, AuraPointsIcon } from './icons';
+import { ProfileIcon, AuraPointsIcon, BrainCircuitIcon } from './icons';
 
 interface ProfileScreenProps {
     profile: UserProfile;
     earnedBadges: string[];
+    onNavigateToInfo: () => void;
 }
 
-const ProfileScreen: React.FC<ProfileScreenProps> = ({ profile, earnedBadges }) => {
+const ProfileScreen: React.FC<ProfileScreenProps> = ({ profile, earnedBadges, onNavigateToInfo }) => {
     const allBadges = getBadges();
     const progressPercent = (profile.ap / profile.apForNextLevel) * 100;
 
@@ -38,7 +39,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ profile, earnedBadges }) 
                 </div>
 
                 {/* Badges */}
-                <div>
+                <div className="mb-8">
                     <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">Achievements</h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         {allBadges.map(badge => {
@@ -54,6 +55,23 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ profile, earnedBadges }) 
                             );
                         })}
                     </div>
+                </div>
+
+                {/* Algorithm Info Button */}
+                <div className="border-t border-slate-200 dark:border-slate-700 pt-6">
+                     <button 
+                        onClick={onNavigateToInfo}
+                        className="w-full text-left p-4 bg-slate-100 dark:bg-slate-700/50 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg flex items-center justify-between transition-colors"
+                    >
+                        <div className="flex items-center gap-3">
+                            <BrainCircuitIcon className="w-6 h-6 text-emerald-500"/>
+                            <div>
+                                <h4 className="font-semibold text-slate-800 dark:text-slate-100">How Our AI Works</h4>
+                                <p className="text-sm text-slate-500 dark:text-slate-400">Learn about our technology.</p>
+                            </div>
+                        </div>
+                        <span className="text-slate-400 dark:text-slate-500">&rarr;</span>
+                    </button>
                 </div>
             </div>
         </div>

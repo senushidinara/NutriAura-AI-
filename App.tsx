@@ -10,12 +10,15 @@ import ForumScreen from './components/ForumScreen';
 import ProgressScreen from './components/ProgressScreen';
 import QuestsScreen from './components/QuestsScreen';
 import ProfileScreen from './components/ProfileScreen';
+import AlgorithmInfoScreen from './components/AlgorithmInfoScreen';
 import { getWellnessAnalysis } from './services/geminiService';
 import { getHistory, addHistoryPoint, getGoals, saveGoals, getUserProfile, awardAp as awardApService, getEarnedBadges, earnBadge as earnBadgeService } from './services/wellnessService';
 import { LeafIcon, MoonIcon, SunIcon, UsersIcon, ChartBarIcon, QuestIcon, ProfileIcon, FireIcon, ArrowLeftIcon } from './components/icons';
 
 const App: React.FC = () => {
-  const [appState, setAppState] = useState<AppState>(AppState.WELCOME);
+  const [navigationStack, setNavigationStack] = useState<AppState[]>([AppState.WELCOME]);
+  const appState = navigationStack[navigationStack.length - 1];
+
   const [userImage, setUserImage] = useState<string | null>(null);
   const [quizAnswers, setQuizAnswers] = useState<QuizAnswers | null>(null);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
@@ -80,16 +83,20 @@ const App: React.FC = () => {
     }
   }, [earnedBadges]);
 
-  const handleStart = useCallback(() => setAppState(AppState.CAMERA), []);
+  const navigateTo = (state: AppState) => setNavigationStack(prev => [...prev, state]);
+  const goBack = () => setNavigationStack(prev => prev.slice(0, -1));
+  const resetTo = (state: AppState) => setNavigationStack([state]);
+
+  const handleStart = useCallback(() => navigateTo(AppState.CAMERA), []);
   
   const handlePhotoCapture = useCallback((imageDataUrl: string) => {
     setUserImage(imageDataUrl);
-    setAppState(AppState.QUIZ);
+    navigateTo(AppState.QUIZ);
   }, []);
 
   const handleQuizSubmit = useCallback((answers: QuizAnswers) => {
     setQuizAnswers(answers);
-    setAppState(AppState.ANALYZING);
+    resetTo(AppState.ANALYZING); // Use resetTo to clear nav history for analysis flow
   }, []);
   
   const handleReset = useCallback(() => {
@@ -97,24 +104,21 @@ const App: React.FC = () => {
     setQuizAnswers(null);
     setAnalysisResult(null);
     setError(null);
-    setAppState(AppState.WELCOME);
+    resetTo(AppState.WELCOME);
   }, []);
 
   const handleBack = useCallback(() => {
-    switch(appState) {
-        case AppState.QUIZ:
-            setAppState(AppState.CAMERA);
-            break;
-        case AppState.CAMERA:
-            setAppState(AppState.WELCOME);
-            break;
-        default:
-            setAppState(AppState.WELCOME);
+    if (navigationStack.length > 1) {
+        goBack();
     }
-  }, [appState]);
+  }, [navigationStack.length]);
 
   const handleNavigate = useCallback((state: AppState) => {
-    setAppState(state);
+    resetTo(state);
+  }, []);
+  
+  const handleNavigateToInfo = useCallback(() => {
+    navigateTo(AppState.ALGORITHM_INFO);
   }, []);
 
   const handleGoalsUpdate = useCallback((updatedGoals: Goal[]) => {
@@ -137,7 +141,6 @@ const App: React.FC = () => {
       const updatedHistory = addHistoryPoint(newDataPoint);
       setHistory(updatedHistory);
       
-      // Award AP for completing analysis
       awardAp(100);
 
       if(!earnedBadges.includes('first_analysis')) {
@@ -145,12 +148,12 @@ const App: React.FC = () => {
         setEarnedBadges(getEarnedBadges());
       }
       
-      setAppState(AppState.RESULTS);
+      resetTo(AppState.RESULTS);
     } catch (err) {
       console.error("Analysis failed:", err);
       const errorMessage = err instanceof Error ? err.message : "An unknown error occurred during analysis.";
       setError(errorMessage);
-      setAppState(AppState.ERROR);
+      resetTo(AppState.ERROR);
     }
   }, [userImage, quizAnswers, awardAp, earnedBadges]);
   
@@ -162,10 +165,12 @@ const App: React.FC = () => {
   }, [appState]);
 
   const renderContent = () => {
-    const key = `${appState}-${userImage != null}`;
+    const key = `${appState}-${navigationStack.length}`;
+    const showBackButton = navigationStack.length > 1 && appState !== AppState.WELCOME;
+
     return (
        <div key={key} className="w-full animate-slide-in">
-        {[AppState.CAMERA, AppState.QUIZ].includes(appState) && (
+        {showBackButton && (
             <button onClick={handleBack} className="mb-4 text-sm flex items-center gap-1 text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 transition-colors">
               <ArrowLeftIcon className="w-4 h-4"/> Back
             </button>
@@ -187,7 +192,9 @@ const App: React.FC = () => {
             case AppState.QUESTS:
               return <QuestsScreen onAwardAp={awardAp} />;
             case AppState.PROFILE:
-              return <ProfileScreen profile={userProfile} earnedBadges={earnedBadges} />;
+              return <ProfileScreen profile={userProfile} earnedBadges={earnedBadges} onNavigateToInfo={handleNavigateToInfo} />;
+            case AppState.ALGORITHM_INFO:
+              return <AlgorithmInfoScreen />;
             case AppState.ERROR:
               return <ErrorScreen message={error || "An unknown error occurred."} onReset={handleReset} />;
             case AppState.WELCOME:

@@ -11,6 +11,7 @@ export enum AppState {
   PROGRESS,
   QUESTS,
   PROFILE,
+  ALGORITHM_INFO,
   ERROR,
 }
 

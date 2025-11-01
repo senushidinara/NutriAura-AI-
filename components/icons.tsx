@@ -192,3 +192,11 @@ export const LeaderboardIcon: React.FC<IconProps> = ({ className }) => (
     <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 19v-2a3 3 0 013-3h1.5a3 3 0 013 3v2m-6 0h6" />
   </svg>
 );
+
+export const BrainCircuitIcon: React.FC<IconProps> = ({ className }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9.5 13.5c1.133 1.133 2.867 1.133 4 0m-8.5-5.5c-.342.342-.342.896 0 1.238l1.238-1.238c-.342-.342-.896-.342-1.238 0zm10 0c.342.342.342.896 0 1.238l-1.238-1.238c.342-.342.896-.342 1.238 0z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 12a8 8 0 018-8v0a8 8 0 018 8v0a8 8 0 01-8 8v0a8 8 0 01-8-8v0z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1.5m0 13V20m-4-14.5L6.5 7M17.5 7L16 8.5m-8 8L6.5 17M17.5 17L16 15.5" />
+    </svg>
+);
