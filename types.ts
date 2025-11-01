@@ -4,6 +4,7 @@ import React from 'react';
 export enum AppState {
   WELCOME,
   CAMERA,
+  CONFIRM_PHOTO, // New state for photo confirmation
   QUIZ,
   ANALYZING,
   RESULTS,

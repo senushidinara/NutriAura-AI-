@@ -91,7 +91,11 @@ const App: React.FC = () => {
   
   const handlePhotoCapture = useCallback((imageDataUrl: string) => {
     setUserImage(imageDataUrl);
-    navigateTo(AppState.QUIZ);
+    navigateTo(AppState.CONFIRM_PHOTO);
+  }, []);
+
+  const handleConfirmPhoto = useCallback(() => {
+      navigateTo(AppState.QUIZ);
   }, []);
 
   const handleQuizSubmit = useCallback((answers: QuizAnswers) => {
@@ -109,9 +113,13 @@ const App: React.FC = () => {
 
   const handleBack = useCallback(() => {
     if (navigationStack.length > 1) {
+        // Special case for confirm photo screen
+        if (appState === AppState.CONFIRM_PHOTO) {
+            setUserImage(null);
+        }
         goBack();
     }
-  }, [navigationStack.length]);
+  }, [navigationStack.length, appState]);
 
   const handleNavigate = useCallback((state: AppState) => {
     resetTo(state);
@@ -205,6 +213,8 @@ const App: React.FC = () => {
           switch (appState) {
             case AppState.CAMERA:
               return <CameraCapture onCapture={handlePhotoCapture} />;
+            case AppState.CONFIRM_PHOTO:
+                return userImage && <CameraCapture onCapture={handlePhotoCapture} imagePreview={userImage} onConfirm={handleConfirmPhoto} />;
             case AppState.QUIZ:
               return <LifestyleQuiz onSubmit={handleQuizSubmit} />;
             case AppState.ANALYZING:
