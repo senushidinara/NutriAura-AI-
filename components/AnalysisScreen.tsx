@@ -10,15 +10,29 @@ const analysisSteps = [
   "Generating personalized insights...",
 ];
 
-const AnalysisScreen: React.FC = () => {
+const chaosAnalysisSteps = [
+  "Consulting the crystal ball...",
+  "Decoding alien wellness secrets...",
+  "Rerouting hamster on wheel...",
+  "Shaking the Magic 8-Ball vigorously...",
+  "Calculating pizza-to-vegetable ratio...",
+  "Generating nonsensical advice...",
+];
+
+interface AnalysisScreenProps {
+  isChaosMode: boolean;
+}
+
+const AnalysisScreen: React.FC<AnalysisScreenProps> = ({ isChaosMode }) => {
   const [currentStep, setCurrentStep] = useState(0);
+  const steps = isChaosMode ? chaosAnalysisSteps : analysisSteps;
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentStep(prev => (prev + 1) % analysisSteps.length);
+      setCurrentStep(prev => (prev + 1) % steps.length);
     }, 2500);
     return () => clearInterval(interval);
-  }, []);
+  }, [steps.length]);
 
   return (
     <div className="text-center flex flex-col items-center p-4 animate-fade-in">
@@ -29,11 +43,13 @@ const AnalysisScreen: React.FC = () => {
         <div className="absolute inset-0 rounded-full border-4 border-emerald-300 dark:border-emerald-500/50 animate-ping"></div>
       </div>
       
-      <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2">Analyzing Your Aura...</h2>
+      <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2">
+        {isChaosMode ? "Embracing Chaos..." : "Analyzing Your Aura..."}
+      </h2>
       
       <div className="h-8 mt-4 w-full max-w-sm text-center">
         <p className="text-slate-600 dark:text-slate-400 transition-opacity duration-500 animate-fade-in-out" key={currentStep}>
-          {analysisSteps[currentStep]}
+          {steps[currentStep]}
         </p>
       </div>
       

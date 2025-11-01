@@ -35,7 +35,7 @@ export interface AnalysisResult {
   keyFindings: {
     title: string;
     description: string;
-    icon: 'nutrition' | 'sleep' | 'stress' | 'hydration';
+    icon: 'nutrition' | 'sleep' | 'stress' | 'hydration' | 'pizza';
   }[];
   recommendations: {
     title: string;

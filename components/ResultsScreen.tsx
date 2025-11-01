@@ -1,20 +1,22 @@
 import React, { useState, useMemo } from 'react';
 import type { AnalysisResult, Goal } from '../types';
-import { LeafIcon, MoonIcon, HeartIcon, DropletIcon, RestartIcon, TargetIcon, ShareIcon, AuraPointsIcon } from './icons';
+import { LeafIcon, MoonIcon, HeartIcon, DropletIcon, RestartIcon, TargetIcon, ShareIcon, AuraPointsIcon, PizzaIcon } from './icons';
 
 interface ResultsScreenProps {
   result: AnalysisResult;
   goals: Goal[];
   onGoalsUpdate: (goals: Goal[]) => void;
   onReset: () => void;
+  isChaosMode: boolean;
 }
 
-const iconMap = {
+const iconMap: { [key: string]: JSX.Element } = {
   nutrition: <LeafIcon className="w-6 h-6 text-emerald-500" />,
   sleep: <MoonIcon className="w-6 h-6 text-indigo-500" />,
   stress: <HeartIcon className="w-6 h-6 text-rose-500" />,
   hydration: <DropletIcon className="w-6 h-6 text-sky-500" />,
   general: <TargetIcon className="w-6 h-6 text-amber-500" />,
+  pizza: <PizzaIcon className="w-6 h-6 text-amber-500" />,
 };
 
 const ringColorMap = {
@@ -168,7 +170,7 @@ const GoalSetter: React.FC<{ result: AnalysisResult; goals: Goal[]; onGoalsUpdat
     );
 };
 
-const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpdate, onReset }) => {
+const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpdate, onReset, isChaosMode }) => {
   const [showApNotification, setShowApNotification] = useState(true);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [selectedGoalToShare, setSelectedGoalToShare] = useState<Goal | null>(null);
@@ -182,6 +184,31 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
     setSelectedGoalToShare(goal);
     setIsShareModalOpen(true);
   };
+  
+  const modifiedResult = useMemo(() => {
+    if (!isChaosMode) return result;
+
+    const chaoticResult = JSON.parse(JSON.stringify(result));
+
+    chaoticResult.keyFindings.unshift({
+        title: "Cosmic Pizza Alignment",
+        description: "Your facial scan indicates a severe deficiency in cheese and pepperoni. This is a critical wellness indicator.",
+        icon: 'pizza',
+    });
+    
+    chaoticResult.recommendations.unshift({
+        title: "Embrace the Chaos",
+        description: "Sometimes, the best plan is no plan. Your aura suggests a dose of pure, unadulterated fun.",
+        items: [
+            "Eat pizza for breakfast.",
+            "Wear mismatched socks with confidence.",
+            "Replace one workout with a spontaneous dance party."
+        ]
+    });
+
+    return chaoticResult;
+  }, [result, isChaosMode]);
+
 
   return (
     <div className="p-1 w-full animate-fade-in max-w-2xl mx-auto">
@@ -193,22 +220,24 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
       )}
       <ShareGoalModal goal={selectedGoalToShare} onClose={() => setIsShareModalOpen(false)} />
 
-      <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2 text-center">Your Wellness Aura</h2>
+      <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2 text-center">
+        {isChaosMode ? "Your Chaotic Aura" : "Your Wellness Aura"}
+      </h2>
       <p className="text-slate-600 dark:text-slate-400 mb-6 text-center">Here's what your body is telling you.</p>
 
       {/* Scores */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8 bg-white dark:bg-slate-800 p-4 rounded-xl shadow-md">
-        <ScoreRing score={result.scores.nutrition} label="Nutrition" colorClass={ringColorMap.nutrition} />
-        <ScoreRing score={result.scores.sleep} label="Sleep" colorClass={ringColorMap.sleep} />
-        <ScoreRing score={result.scores.stress} label="Stress" colorClass={ringColorMap.stress} />
-        <ScoreRing score={result.scores.hydration} label="Hydration" colorClass={ringColorMap.hydration} />
+        <ScoreRing score={modifiedResult.scores.nutrition} label="Nutrition" colorClass={ringColorMap.nutrition} />
+        <ScoreRing score={modifiedResult.scores.sleep} label="Sleep" colorClass={ringColorMap.sleep} />
+        <ScoreRing score={modifiedResult.scores.stress} label="Stress" colorClass={ringColorMap.stress} />
+        <ScoreRing score={modifiedResult.scores.hydration} label="Hydration" colorClass={ringColorMap.hydration} />
       </div>
 
       {/* Key Findings */}
       <div className="mb-8">
         <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">Key Findings</h3>
         <div className="space-y-3">
-          {result.keyFindings.map((finding, index) => (
+          {modifiedResult.keyFindings.map((finding, index) => (
             <div key={index} className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm flex items-start gap-4">
               <div className="flex-shrink-0 bg-slate-100 dark:bg-slate-700 p-3 rounded-full">{iconMap[finding.icon]}</div>
               <div>
@@ -224,7 +253,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
        <div className="mb-8">
         <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">Your Personalized Plan</h3>
          <div className="space-y-4">
-            {result.recommendations.map((rec, index) => (
+            {modifiedResult.recommendations.map((rec, index) => (
                 <div key={index} className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow-sm">
                     <h4 className="font-bold text-slate-800 dark:text-slate-100 mb-2">{rec.title}</h4>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">{rec.description}</p>
@@ -242,7 +271,7 @@ const ResultsScreen: React.FC<ResultsScreenProps> = ({ result, goals, onGoalsUpd
       </div>
       
       {/* Goal Setter */}
-      <GoalSetter result={result} goals={goals} onGoalsUpdate={onGoalsUpdate} onShare={handleShareGoal} />
+      <GoalSetter result={modifiedResult} goals={goals} onGoalsUpdate={onGoalsUpdate} onShare={handleShareGoal} />
 
       <button
         onClick={onReset}

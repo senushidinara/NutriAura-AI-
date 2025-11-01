@@ -12,7 +12,7 @@ import QuestsScreen from './components/QuestsScreen';
 import ProfileScreen from './components/ProfileScreen';
 import { getWellnessAnalysis } from './services/geminiService';
 import { getHistory, addHistoryPoint, getGoals, saveGoals, getUserProfile, awardAp as awardApService, getEarnedBadges, earnBadge as earnBadgeService } from './services/wellnessService';
-import { LeafIcon, MoonIcon, SunIcon, UsersIcon, ChartBarIcon, QuestIcon, ProfileIcon } from './components/icons';
+import { LeafIcon, MoonIcon, SunIcon, UsersIcon, ChartBarIcon, QuestIcon, ProfileIcon, FireIcon } from './components/icons';
 
 const App: React.FC = () => {
   const [appState, setAppState] = useState<AppState>(AppState.WELCOME);
@@ -28,11 +28,11 @@ const App: React.FC = () => {
   const [earnedBadges, setEarnedBadges] = useState<string[]>(getEarnedBadges());
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const theme = localStorage.getItem('theme');
-      return theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    }
-    return false;
+    return localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  });
+
+  const [isChaosMode, setIsChaosMode] = useState(() => {
+    return localStorage.getItem('chaosMode') === 'true';
   });
   
   useEffect(() => {
@@ -43,23 +43,38 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const root = document.documentElement;
     if (isDarkMode) {
-      document.documentElement.classList.add('dark');
+      root.classList.add('dark');
       localStorage.setItem('theme', 'dark');
     } else {
-      document.documentElement.classList.remove('dark');
+      root.classList.remove('dark');
       localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);
+  
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isChaosMode) {
+      root.classList.add('chaos-mode');
+      localStorage.setItem('chaosMode', 'true');
+      const randomHue = Math.floor(Math.random() * 360);
+      root.style.setProperty('--chaos-primary-color', `hsl(${randomHue}, 80%, 60%)`);
+    } else {
+      root.classList.remove('chaos-mode');
+      localStorage.setItem('chaosMode', 'false');
+      root.style.removeProperty('--chaos-primary-color');
+    }
+  }, [isChaosMode]);
 
   const toggleDarkMode = () => setIsDarkMode(prev => !prev);
+  const toggleChaosMode = () => setIsChaosMode(prev => !prev);
 
   const awardAp = useCallback((points: number) => {
     const newProfile = awardApService(points);
     setUserProfile(newProfile);
     // Check for new badges
     if(newProfile.level >= 5 && !earnedBadges.includes('level_5')) {
-      // FIX: Corrected the function call from 'earnBadge' to 'earnBadgeService' to match the imported service function name.
       earnBadgeService('level_5');
       setEarnedBadges(getEarnedBadges());
     }
@@ -140,9 +155,9 @@ const App: React.FC = () => {
       case AppState.QUIZ:
         return <LifestyleQuiz onSubmit={handleQuizSubmit} />;
       case AppState.ANALYZING:
-        return <AnalysisScreen />;
+        return <AnalysisScreen isChaosMode={isChaosMode} />;
       case AppState.RESULTS:
-        return analysisResult && <ResultsScreen result={analysisResult} goals={goals} onGoalsUpdate={handleGoalsUpdate} onReset={handleReset} />;
+        return analysisResult && <ResultsScreen result={analysisResult} goals={goals} onGoalsUpdate={handleGoalsUpdate} onReset={handleReset} isChaosMode={isChaosMode} />;
       case AppState.FORUM:
         return <ForumScreen />;
       case AppState.PROGRESS:
@@ -155,7 +170,7 @@ const App: React.FC = () => {
         return <ErrorScreen message={error || "An unknown error occurred."} onReset={handleReset} />;
       case AppState.WELCOME:
       default:
-        return <WelcomeScreen onStart={handleStart} />;
+        return <WelcomeScreen onStart={handleStart} isChaosMode={isChaosMode} />;
     }
   };
 
@@ -179,6 +194,9 @@ const App: React.FC = () => {
                </button>
                <button onClick={() => handleNavigate(AppState.FORUM)} className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" aria-label="Community Forum">
                  <UsersIcon className="w-6 h-6 text-slate-600 dark:text-slate-300" />
+               </button>
+               <button onClick={toggleChaosMode} className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" aria-label="Toggle Chaos Mode">
+                 <FireIcon className={`w-6 h-6 transition-colors ${isChaosMode ? 'text-red-500' : 'text-slate-600 dark:text-slate-300'}`} />
                </button>
                <button onClick={toggleDarkMode} className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" aria-label="Toggle dark mode">
                 {isDarkMode ? <SunIcon className="w-6 h-6 text-amber-400" /> : <MoonIcon className="w-6 h-6 text-slate-600" />}

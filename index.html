@@ -30,6 +30,26 @@
       .dark ::-webkit-scrollbar-thumb:hover {
         background: #6ee7b7; /* emerald-300 */
       }
+      
+      /* --- Chaos Mode Styles --- */
+      .chaos-mode h1, .chaos-mode h2, .chaos-mode h3 {
+          font-family: "Comic Sans MS", "Comic Sans", cursive;
+          animation: chaos-glow 1.5s infinite alternate;
+      }
+      .chaos-mode .bg-white, .chaos-mode .bg-slate-100, .dark.chaos-mode .dark\:bg-slate-800 {
+          transform: rotate(-1deg);
+      }
+      .chaos-mode button {
+          animation: chaos-jiggle 0.5s infinite;
+      }
+      @keyframes chaos-glow {
+          from { text-shadow: 0 0 4px var(--chaos-primary-color, #ff00de); }
+          to { text-shadow: 0 0 10px var(--chaos-primary-color, #ff00de), 0 0 15px #fff; }
+      }
+      @keyframes chaos-jiggle {
+        0%, 100% { transform: rotate(-1deg); }
+        50% { transform: rotate(1deg); }
+      }
     </style>
   <script type="importmap">
 {
@@ -42,11 +62,14 @@
 }
 </script>
 <script>
-    // Prevent FOUC for dark mode
+    // Prevent FOUC for dark mode & chaos mode
     if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
     } else {
         document.documentElement.classList.remove('dark');
+    }
+    if (localStorage.getItem('chaosMode') === 'true') {
+        document.documentElement.classList.add('chaos-mode');
     }
 </script>
 </head>

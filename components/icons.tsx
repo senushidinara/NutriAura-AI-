@@ -124,3 +124,19 @@ export const ShareIcon: React.FC<IconProps> = ({ className }) => (
     <path strokeLinecap="round" strokeLinejoin="round" d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8m-4-6l-4-4m0 0l-4 4m4-4v12" />
   </svg>
 );
+
+export const FireIcon: React.FC<IconProps> = ({ className }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.657 7.343A8 8 0 0117.657 18.657z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9.5 16.5c1.414-1.414 1.414-3.686 0-5.099M11.5 14.5c1.414-1.414 1.414-3.686 0-5.099" />
+  </svg>
+);
+
+export const PizzaIcon: React.FC<IconProps> = ({ className }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M21.25,12.06a9,9,0,0,0-9.19-9.19,9,9,0,0,0-9.19,9.19A9,9,0,0,0,12.06,21.25,9,9,0,0,0,21.25,12.06Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12.06,2.87V21.25a9,9,0,0,0,9.19-9.19A9,9,0,0,0,12.06,2.87Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5,8.5a.5.5,0,1,1-.5-.5A.5.5,0,0,1,16.5,8.5Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15,14a.5.5,0,1,1-.5-.5A.5.5,0,0,1,15,14Z" />
+    </svg>
+);
