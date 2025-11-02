@@ -34,7 +34,7 @@ const RadioCardGroup: React.FC<{
           type="button"
           key={value}
           onClick={() => onChange(value)}
-          className={`relative p-3 rounded-lg text-base transition-all duration-200 font-semibold flex flex-col items-center justify-center gap-2 border-2 ${
+          className={`relative p-3 rounded-lg text-base transition-all duration-200 font-semibold flex flex-col items-center justify-center gap-2 border-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500 dark:focus-visible:ring-offset-slate-800 ${
             isSelected
               ? 'bg-emerald-50 text-emerald-700 border-emerald-500 shadow-md dark:bg-emerald-900/50 dark:text-emerald-300'
               : 'bg-slate-100 text-slate-700 border-transparent hover:bg-slate-200 dark:bg-slate-700/80 dark:text-slate-200 dark:hover:bg-slate-700'
@@ -80,7 +80,7 @@ const RangeSlider: React.FC<{
               step={step}
               value={value}
               onChange={(e) => onChange(step === 1 ? parseInt(e.target.value, 10) : parseFloat(e.target.value))}
-              className={`relative w-full h-2 bg-transparent appearance-none cursor-pointer [&::-webkit-slider-thumb]:${sliderThumbClass} [&::-moz-range-thumb]:${sliderThumbClass}`}
+              className={`relative w-full h-2 bg-transparent appearance-none cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 rounded-full [&::-webkit-slider-thumb]:${sliderThumbClass} [&::-moz-range-thumb]:${sliderThumbClass}`}
             />
         </div>
         <span className="font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 rounded-md py-1 px-2 w-24 text-center">
@@ -160,7 +160,7 @@ const LifestyleQuiz: React.FC<LifestyleQuizProps> = ({ onSubmit }) => {
 
         <button
           type="submit"
-          className="w-full text-lg bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-amber-500/40 hover:from-amber-500 hover:to-orange-600 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-amber-300 dark:focus:ring-orange-600"
+          className="w-full text-lg bg-gradient-to-r from-amber-400 to-orange-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-amber-500/40 hover:from-amber-500 hover:to-orange-600 transition-all transform hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-300 dark:focus-visible:ring-orange-600"
         >
           Submit & Analyze
         </button>

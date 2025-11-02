@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import type { ForumPost, Challenge } from '../types';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import type { ForumPost, Challenge, WellnessDataPoint, AnalysisScores } from '../types';
 import { getPosts, addPost, getLeaderboardData } from '../services/forumService';
 import { getChallenges, getJoinedChallenges, joinChallenge, getUserProfile } from '../services/wellnessService';
 import type { LeaderboardUser } from '../services/forumService';
@@ -26,7 +26,7 @@ const ChallengeDetailModal: React.FC<{ challenge: Challenge | null; onClose: () 
     return (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={onClose}>
             <div className="interactive-card rounded-xl shadow-lg p-6 sm:p-8 max-w-lg w-full relative animate-slide-in" onClick={(e) => e.stopPropagation()}>
-                <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition">&times;</button>
+                <button onClick={onClose} className="absolute top-4 right-4 text-2xl leading-none text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition rounded-full w-8 h-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500">&times;</button>
                 <div className="flex items-center gap-4 mb-4">
                     <div className="p-3 rounded-full bg-amber-100 dark:bg-amber-900/50">
                         <challenge.icon className="w-8 h-8 text-amber-500" />
@@ -46,7 +46,7 @@ const ChallengeDetailModal: React.FC<{ challenge: Challenge | null; onClose: () 
                         </li>
                     ))}
                 </ul>
-                <button onClick={onClose} className="mt-6 w-full bg-emerald-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-emerald-600 transition">
+                <button onClick={onClose} className="mt-6 w-full bg-emerald-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-emerald-600 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500 dark:focus-visible:ring-offset-slate-800">
                     Close
                 </button>
             </div>
@@ -54,15 +54,19 @@ const ChallengeDetailModal: React.FC<{ challenge: Challenge | null; onClose: () 
     );
 };
 
-const WellnessChallenges: React.FC = () => {
+interface WellnessChallengesProps {
+    challengesToShow?: Challenge[];
+}
+
+const WellnessChallenges: React.FC<WellnessChallengesProps> = ({ challengesToShow }) => {
     const [challenges, setChallenges] = useState<Challenge[]>([]);
     const [joinedChallenges, setJoinedChallenges] = useState<string[]>([]);
     const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
 
     useEffect(() => {
-        setChallenges(getChallenges());
+        setChallenges(challengesToShow || getChallenges());
         setJoinedChallenges(getJoinedChallenges());
-    }, []);
+    }, [challengesToShow]);
 
     const handleJoin = (e: React.MouseEvent, challengeId: string) => {
         e.stopPropagation();
@@ -77,7 +81,7 @@ const WellnessChallenges: React.FC = () => {
                 {challenges.map(challenge => {
                     const isJoined = joinedChallenges.includes(challenge.id);
                     return (
-                        <div key={challenge.id} onClick={() => setSelectedChallenge(challenge)} className="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+                        <button key={challenge.id} onClick={() => setSelectedChallenge(challenge)} className="w-full text-left bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500 dark:focus-visible:ring-offset-slate-800">
                             <div className="flex items-start gap-3">
                                 <div className={`p-2 rounded-full ${isJoined ? 'bg-slate-200 dark:bg-slate-700' : 'bg-amber-100 dark:bg-amber-900/50'}`}>
                                     <challenge.icon className={`w-7 h-7 ${isJoined ? 'text-slate-400' : 'text-amber-500'}`} />
@@ -90,7 +94,7 @@ const WellnessChallenges: React.FC = () => {
                             <button
                                 onClick={(e) => handleJoin(e, challenge.id)}
                                 disabled={isJoined}
-                                className={`py-2 px-4 rounded-lg text-sm font-bold transition whitespace-nowrap ${
+                                className={`py-2 px-4 rounded-lg text-sm font-bold transition whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-amber-500 dark:focus-visible:ring-offset-slate-700 ${
                                     isJoined 
                                         ? 'bg-slate-200 text-slate-500 dark:bg-slate-600 dark:text-slate-400 cursor-default' 
                                         : 'bg-amber-500 text-white hover:bg-amber-600'
@@ -98,7 +102,7 @@ const WellnessChallenges: React.FC = () => {
                             >
                                 {isJoined ? 'Joined!' : 'Join'}
                             </button>
-                        </div>
+                        </button>
                     );
                 })}
             </div>
@@ -134,13 +138,42 @@ const Leaderboard: React.FC = () => {
     );
 };
 
+interface ForumScreenProps {
+    history: WellnessDataPoint[];
+}
 
-const ForumScreen: React.FC = () => {
+const ForumScreen: React.FC<ForumScreenProps> = ({ history }) => {
     const [posts, setPosts] = useState<ForumPost[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [newPostContent, setNewPostContent] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [activeTab, setActiveTab] = useState<'community' | 'leaderboard'>('community');
+
+    const suggestedChallenges = useMemo(() => {
+        const latestAnalysis = history.length > 0 ? history[history.length - 1] : null;
+        if (!latestAnalysis) return [];
+
+        const scores = latestAnalysis.scores;
+        // Find the category with the lowest score
+        const lowestScoreCategory = (Object.keys(scores) as Array<keyof AnalysisScores>).reduce((a, b) => scores[a] < scores[b] ? a : b);
+        
+        const allChallenges = getChallenges();
+        const joined = getJoinedChallenges();
+
+        // Simple mapping from score category to challenge theme
+        const categoryToChallengeMap: { [key: string]: string[] } = {
+            nutrition: ['mindful_eating_week'],
+            hydration: ['hydration_challenge_month'],
+            sleep: ['digital_detox_weekend'],
+            stress: ['digital_detox_weekend', 'mindful_eating_week'],
+        };
+        
+        const suggestedIds = categoryToChallengeMap[lowestScoreCategory] || [];
+        
+        // Find challenge objects and filter out already joined ones
+        return allChallenges.filter(c => suggestedIds.includes(c.id) && !joined.includes(c.id));
+
+    }, [history]);
 
     useEffect(() => {
       // Simulate fetching data
@@ -170,20 +203,31 @@ const ForumScreen: React.FC = () => {
 
     const renderCommunityContent = () => (
         <>
+            {suggestedChallenges.length > 0 && (
+                <div className="interactive-card rounded-xl shadow-lg p-6 sm:p-8 mb-8 border-2 border-amber-400 dark:border-amber-500 bg-amber-50/50 dark:bg-amber-900/20">
+                    <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center gap-2">
+                        <TrophyIcon className="w-6 h-6 text-amber-500" />
+                        Recommended For You
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-400 mb-4 text-base">Based on your recent analysis, this challenge might be a great next step on your wellness journey!</p>
+                    <WellnessChallenges challengesToShow={suggestedChallenges} />
+                </div>
+            )}
+
             <div className="interactive-card rounded-xl shadow-lg p-6 sm:p-8 mb-8">
                 <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center gap-2">
                     <TrophyIcon className="w-6 h-6 text-amber-500" />
-                    Community Challenges
+                    All Community Challenges
                 </h3>
                 <WellnessChallenges />
             </div>
-            {/* Posts Section */}
+            
             <div className="interactive-card rounded-xl shadow-lg p-6 sm:p-8">
                 <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">Recent Posts</h3>
                 <form onSubmit={handlePostSubmit} className="mb-6 bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg">
                     <textarea value={newPostContent} onChange={(e) => setNewPostContent(e.target.value)} placeholder="Share your progress, ask a question..." className="w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition" rows={3} />
                     <div className="flex justify-end mt-3">
-                        <button type="submit" disabled={!newPostContent.trim() || isSubmitting} className="bg-emerald-500 text-white font-bold py-2 px-5 rounded-lg shadow-md hover:bg-emerald-600 transition disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed">
+                        <button type="submit" disabled={!newPostContent.trim() || isSubmitting} className="bg-emerald-500 text-white font-bold py-2 px-5 rounded-lg shadow-md hover:bg-emerald-600 transition disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500 dark:focus-visible:ring-offset-slate-700">
                             {isSubmitting ? 'Posting...' : 'Post'}
                         </button>
                     </div>
@@ -221,8 +265,8 @@ const ForumScreen: React.FC = () => {
             
             <div className="mb-6 flex justify-center">
                 <div className="bg-slate-200 dark:bg-slate-700 p-1 rounded-lg flex gap-1">
-                    <button onClick={() => setActiveTab('community')} className={`px-4 py-2 text-sm font-semibold rounded-md transition ${activeTab === 'community' ? 'bg-white text-emerald-600 dark:bg-slate-800' : 'text-slate-600 dark:text-slate-300'}`}>Community</button>
-                    <button onClick={() => setActiveTab('leaderboard')} className={`px-4 py-2 text-sm font-semibold rounded-md transition ${activeTab === 'leaderboard' ? 'bg-white text-emerald-600 dark:bg-slate-800' : 'text-slate-600 dark:text-slate-300'}`}>Leaderboard</button>
+                    <button onClick={() => setActiveTab('community')} className={`px-4 py-2 text-sm font-semibold rounded-md transition ${activeTab === 'community' ? 'bg-white text-emerald-600 dark:bg-slate-800' : 'text-slate-600 dark:text-slate-300'} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500`}>Community</button>
+                    <button onClick={() => setActiveTab('leaderboard')} className={`px-4 py-2 text-sm font-semibold rounded-md transition ${activeTab === 'leaderboard' ? 'bg-white text-emerald-600 dark:bg-slate-800' : 'text-slate-600 dark:text-slate-300'} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500`}>Leaderboard</button>
                 </div>
             </div>
 

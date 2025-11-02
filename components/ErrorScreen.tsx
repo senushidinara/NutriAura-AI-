@@ -20,7 +20,7 @@ const ErrorScreen: React.FC<ErrorScreenProps> = ({ message, onReset }) => {
       </p>
       <button
         onClick={onReset}
-        className="w-full max-w-xs bg-rose-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-rose-600 transition-transform transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-rose-300 dark:focus:ring-rose-600 flex items-center justify-center gap-2"
+        className="w-full max-w-xs bg-rose-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-rose-600 transition-transform transform hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-rose-300 dark:focus-visible:ring-rose-600 flex items-center justify-center gap-2"
       >
         <RestartIcon className="w-5 h-5" />
         Try Again

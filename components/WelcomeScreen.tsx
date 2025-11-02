@@ -20,7 +20,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStart, isChaosMode }) =
       </p>
       <button
         onClick={onStart}
-        className="w-full max-w-xs bg-gradient-to-r from-emerald-500 to-green-500 text-white text-lg font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-emerald-500/40 hover:from-emerald-600 hover:to-green-600 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-700"
+        className="w-full max-w-xs bg-gradient-to-r from-emerald-500 to-green-500 text-white text-lg font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-emerald-500/40 hover:from-emerald-600 hover:to-green-600 transition-all transform hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-300 dark:focus-visible:ring-emerald-700"
       >
         {isChaosMode ? "Unleash the Chaos" : "Begin Your Wellness Journey"}
       </button>

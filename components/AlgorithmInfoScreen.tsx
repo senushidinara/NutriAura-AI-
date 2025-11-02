@@ -10,7 +10,7 @@ const AlgorithmInfoScreen: React.FC = () => {
         </div>
     );
 
-    const linkClass = "text-emerald-600 dark:text-emerald-400 font-semibold hover:underline";
+    const linkClass = "text-emerald-600 dark:text-emerald-400 font-semibold hover:underline rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500";
 
     return (
         <div className="w-full">

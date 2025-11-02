@@ -47,7 +47,7 @@ const QuestsScreen: React.FC<QuestsScreenProps> = ({ onAwardAp }) => {
                                     <button
                                         onClick={() => handleCompleteMission(mission)}
                                         disabled={isCompleted}
-                                        className={`py-2 px-4 rounded-lg text-sm font-bold transition whitespace-nowrap ${
+                                        className={`py-2 px-4 rounded-lg text-sm font-bold transition whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500 dark:focus-visible:ring-offset-slate-700 ${
                                             isCompleted 
                                                 ? 'bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-400 cursor-default' 
                                                 : 'bg-emerald-500 text-white hover:bg-emerald-600'

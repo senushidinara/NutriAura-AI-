@@ -205,7 +205,7 @@ const App: React.FC = () => {
     return (
        <div key={key} className="w-full animate-slide-in">
         {showBackButton && (
-            <button onClick={handleBack} className="mb-4 text-sm flex items-center gap-1 text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 transition-colors">
+            <button onClick={handleBack} className="mb-4 text-sm flex items-center gap-1 text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500">
               <ArrowLeftIcon className="w-4 h-4"/> Back
             </button>
         )}
@@ -222,7 +222,7 @@ const App: React.FC = () => {
             case AppState.RESULTS:
               return analysisResult && <ResultsScreen result={analysisResult} goals={goals} onGoalsUpdate={handleGoalsUpdate} onReset={handleReset} isChaosMode={isChaosMode} />;
             case AppState.FORUM:
-              return <ForumScreen />;
+              return <ForumScreen history={history} />;
             case AppState.PROGRESS:
               return <ProgressScreen history={history} />;
             case AppState.QUESTS:
@@ -245,7 +245,7 @@ const App: React.FC = () => {
   const NavButton: React.FC<{ targetState: AppState; label: string; children: React.ReactNode }> = ({ targetState, label, children }) => (
     <button 
       onClick={() => handleNavigate(targetState)} 
-      className={`p-2 rounded-lg transition-all duration-200 no-chaos relative ${appState === targetState ? 'bg-slate-200/80 dark:bg-slate-700/80' : 'hover:bg-slate-200/50 dark:hover:bg-slate-700/50'}`}
+      className={`p-2 rounded-lg transition-all duration-200 no-chaos relative ${appState === targetState ? 'bg-slate-200/80 dark:bg-slate-700/80' : 'hover:bg-slate-200/50 dark:hover:bg-slate-700/50'} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500 dark:focus-visible:ring-offset-slate-900`}
       aria-label={label}
     >
       {children}
@@ -258,7 +258,7 @@ const App: React.FC = () => {
     <div className="min-h-screen text-slate-800 dark:text-slate-200 flex flex-col items-center p-4">
        <header className="fixed top-0 left-0 right-0 z-10 w-full bg-slate-50/50 dark:bg-slate-900/50 backdrop-blur-lg border-b border-slate-200/50 dark:border-slate-700/50">
          <div className="max-w-4xl mx-auto p-3 flex justify-between items-center">
-            <button onClick={handleReset} className="flex items-center gap-2 group">
+            <button onClick={handleReset} className="flex items-center gap-2 group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500 dark:focus-visible:ring-offset-slate-900 p-1">
               <LeafIcon className="w-8 h-8 text-emerald-500 group-hover:rotate-12 transition-transform" />
               <h1 className="text-xl font-bold text-slate-700 dark:text-slate-200 hidden sm:block">NutriAura AI</h1>
             </button>
@@ -275,10 +275,10 @@ const App: React.FC = () => {
                <NavButton targetState={AppState.FORUM} label="Community Forum">
                  <UsersIcon className="w-7 h-7 text-slate-600 dark:text-slate-300" />
                </NavButton>
-               <button onClick={toggleChaosMode} className="p-2 rounded-lg hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors no-chaos" aria-label="Toggle Chaos Mode">
+               <button onClick={toggleChaosMode} className="p-2 rounded-lg hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors no-chaos focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500 dark:focus-visible:ring-offset-slate-900" aria-label="Toggle Chaos Mode">
                  <FireIcon className={`w-7 h-7 transition-colors ${isChaosMode ? 'text-red-500' : 'text-slate-600 dark:text-slate-300'}`} />
                </button>
-               <button onClick={toggleDarkMode} className="p-2 rounded-lg hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors no-chaos" aria-label="Toggle dark mode">
+               <button onClick={toggleDarkMode} className="p-2 rounded-lg hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-colors no-chaos focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500 dark:focus-visible:ring-offset-slate-900" aria-label="Toggle dark mode">
                 {isDarkMode ? <SunIcon className="w-7 h-7 text-amber-400" /> : <MoonIcon className="w-7 h-7 text-slate-600" />}
                </button>
             </nav>

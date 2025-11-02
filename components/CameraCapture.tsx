@@ -93,11 +93,11 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, imagePreview =
 
   const renderInitialState = () => (
     <div className="absolute inset-0 flex flex-col items-center justify-center p-4 gap-4">
-      <button onClick={startCamera} className="w-full text-lg max-w-xs bg-emerald-500 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-emerald-600 transition flex items-center justify-center gap-3">
+      <button onClick={startCamera} className="w-full text-lg max-w-xs bg-emerald-500 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-emerald-600 transition flex items-center justify-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500 dark:focus-visible:ring-offset-slate-700">
         <CameraIcon className="w-7 h-7" />
         Use Camera
       </button>
-      <button onClick={handleUploadClick} className="w-full text-lg max-w-xs bg-slate-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-slate-700 transition flex items-center justify-center gap-3">
+      <button onClick={handleUploadClick} className="w-full text-lg max-w-xs bg-slate-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-slate-700 transition flex items-center justify-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-700">
         <UploadIcon className="w-7 h-7" />
         Upload Photo
       </button>
@@ -143,7 +143,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, imagePreview =
           {imagePreview && onConfirm ? (
              <button
               onClick={onConfirm}
-              className="w-full text-lg bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-emerald-500/40 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-700 flex items-center justify-center gap-2"
+              className="w-full text-lg bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-emerald-500/40 transition-all transform hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-300 dark:focus-visible:ring-emerald-700 flex items-center justify-center gap-2"
             >
               <span>Confirm & Continue</span>
             </button>
@@ -151,7 +151,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, imagePreview =
             <button
                 onClick={handleCapture}
                 disabled={!isCameraReady}
-                className="w-full text-lg bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-emerald-500/40 transition-all transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-700 disabled:from-slate-400 disabled:to-slate-500 dark:disabled:from-slate-600 dark:disabled:to-slate-700 disabled:cursor-not-allowed disabled:scale-100 disabled:shadow-none flex items-center justify-center gap-2"
+                className="w-full text-lg bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-emerald-500/40 transition-all transform hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-300 dark:focus-visible:ring-emerald-700 disabled:from-slate-400 disabled:to-slate-500 dark:disabled:from-slate-600 dark:disabled:to-slate-700 disabled:cursor-not-allowed disabled:scale-100 disabled:shadow-none flex items-center justify-center gap-2"
             >
                 <CameraIcon className="w-7 h-7" />
                 <span>Take Photo</span>
