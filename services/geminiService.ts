@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/genai";
 import type { QuizAnswers, AnalysisResult } from '../types';
 
 const API_KEY = process.env.API_KEY;
@@ -7,7 +7,7 @@ if (!API_KEY) {
   throw new Error("API_KEY environment variable not set");
 }
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+const ai = new GoogleGenerativeAI({ apiKey: API_KEY });
 
 // Schema description for the prompt, to guide the model's JSON output
 const analysisSchemaDescription = `
