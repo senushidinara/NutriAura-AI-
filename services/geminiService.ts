@@ -3,11 +3,11 @@ import type { QuizAnswers, AnalysisResult } from '../types';
 
 const API_KEY = process.env.API_KEY;
 
-if (!API_KEY) {
-  throw new Error("API_KEY environment variable not set");
-}
+let ai: any = null;
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+if (API_KEY) {
+  ai = new GoogleGenAI({ apiKey: API_KEY });
+}
 
 // Schema description for the prompt, to guide the model's JSON output
 const analysisSchemaDescription = `
@@ -49,6 +49,10 @@ export const getWellnessAnalysis = async (
   answers: QuizAnswers,
   location: { latitude: number; longitude: number } | null
 ): Promise<AnalysisResult> => {
+  if (!API_KEY || !ai) {
+    throw new Error("API_KEY environment variable not set");
+  }
+
   const { mimeType, data: imageBase64 } = imageToBase64(imageDataUrl);
 
   const prompt = `
