@@ -81,8 +81,8 @@ const WellnessChallenges: React.FC<WellnessChallengesProps> = ({ challengesToSho
                 {challenges.map(challenge => {
                     const isJoined = joinedChallenges.includes(challenge.id);
                     return (
-                        <button key={challenge.id} onClick={() => setSelectedChallenge(challenge)} className="w-full text-left bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-emerald-500 dark:focus-visible:ring-offset-slate-800">
-                            <div className="flex items-start gap-3">
+                        <div key={challenge.id} className="w-full bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition" onClick={() => setSelectedChallenge(challenge)}>
+                            <div className="flex items-start gap-3 flex-1">
                                 <div className={`p-2 rounded-full ${isJoined ? 'bg-slate-200 dark:bg-slate-700' : 'bg-amber-100 dark:bg-amber-900/50'}`}>
                                     <challenge.icon className={`w-7 h-7 ${isJoined ? 'text-slate-400' : 'text-amber-500'}`} />
                                 </div>
@@ -95,14 +95,14 @@ const WellnessChallenges: React.FC<WellnessChallengesProps> = ({ challengesToSho
                                 onClick={(e) => handleJoin(e, challenge.id)}
                                 disabled={isJoined}
                                 className={`py-2 px-4 rounded-lg text-sm font-bold transition whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-amber-500 dark:focus-visible:ring-offset-slate-700 ${
-                                    isJoined 
-                                        ? 'bg-slate-200 text-slate-500 dark:bg-slate-600 dark:text-slate-400 cursor-default' 
+                                    isJoined
+                                        ? 'bg-slate-200 text-slate-500 dark:bg-slate-600 dark:text-slate-400 cursor-default'
                                         : 'bg-amber-500 text-white hover:bg-amber-600'
                                 }`}
                             >
                                 {isJoined ? 'Joined!' : 'Join'}
                             </button>
-                        </button>
+                        </div>
                     );
                 })}
             </div>
